@@ -30,7 +30,7 @@ export default function Register() {
 
   const fetchToken = async (): Promise<string | null> => {
     // const URL = "http://localhost:5000/api/auth/token";
-    const URL = "https://auras-ai-v1-server.vercel.app/";
+    const URL = "https://auras-ai-v1-server.vercel.app";
     try {
       const response = await axios.get(`${URL}/api/auth/token`);
 
