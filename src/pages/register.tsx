@@ -35,7 +35,7 @@ export default function Register() {
       const response = await axios.get(`${URL}/api/auth/token`);
 
       if (response.status === 200 && response.data.access_token) {
-        console.log("Token fetched successfully:", response.data.access_token);
+        // console.log("Token fetched successfully:", response.data.access_token);
         return response.data.access_token;
       } else {
         console.error("Failed to fetch token:", response.data);
@@ -52,7 +52,7 @@ export default function Register() {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log("Form data:", data);
+    // console.log("Form data:", data);
 
     const { email, password } = data;
     const [localPart] = email.split("@");
@@ -87,7 +87,7 @@ export default function Register() {
       );
 
       if (response.status === 200) {
-        console.log("User registered successfully:", response.data);
+        // console.log("User registered successfully:", response.data);
         alert("Registration successful!");
         reset();
       } else {

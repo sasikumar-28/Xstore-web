@@ -29,7 +29,7 @@ export default function Login() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
-    console.log(data);
+    // console.log(data);
 
     const { email, password } = data;
 
@@ -64,7 +64,7 @@ export default function Login() {
       );
 
       if (response.status === 200) {
-        console.log("User Login successfully:", response.data);
+        // console.log("User Login successfully:", response.data);
         alert("Login successful!");
         reset();
       } else {
