@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import regisernow from "@/assets/registernnow.png";
+import { useNavigate } from "react-router";
 
 type FormValues = {
   email: string;
@@ -14,6 +15,7 @@ type FormValues = {
 };
 
 export default function Register() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -87,6 +89,7 @@ export default function Register() {
 
       if (response.status === 200) {
         alert("Registration successful!");
+        navigate("/login");
         reset();
       } else {
         console.error("Failed to register user:", response.data);

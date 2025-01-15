@@ -1,13 +1,13 @@
 ## Project setup 
 
 # Install pnpm
-`npm install -g pnpm`
+`npm install -g npm`
 
 # Setup the project
-`pnpm install`
+`nnpm install`
 
 # Start the project
- `pnpm dev`
+ `npm run dev`
 
 # Build the project
-`pnpm build`
+`npm run build`
