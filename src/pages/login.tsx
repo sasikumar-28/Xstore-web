@@ -1,10 +1,10 @@
 "use client";
 
+import { NavLink, useNavigate } from "react-router";
+import { useForm, SubmitHandler } from "react-hook-form";
+import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { NavLink } from "react-router";
-import axios from "axios";
 import loginPageRobot from "@/assets/login-page-image/login-page-robot.png";
 import submitButtonIcon from "@/assets/login-page-image/submit-icon.png";
 import leftQuote from "@/assets/login-page-image/quote-left.png";
@@ -16,6 +16,7 @@ interface FormValues {
 }
 
 export default function Login() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -63,6 +64,7 @@ export default function Login() {
 
       if (response.status === 200) {
         alert("Login successful!");
+        navigate("/chats");
         reset();
       } else {
         console.error("Failed to login user:", response.data);
