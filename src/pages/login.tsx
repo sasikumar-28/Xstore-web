@@ -29,10 +29,8 @@ export default function Login() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
-    // console.log(data);
 
     const { email, password } = data;
-
     const payload = {
       emailId: email,
       password,
@@ -44,7 +42,6 @@ export default function Login() {
       //   alert("Failed to fetch token. Please try again.");
       //   return;
       // }
-
       const token = localStorage.getItem("registrationToken");
 
       if (!token) {
@@ -52,8 +49,9 @@ export default function Login() {
         return;
       }
 
+      const URL = "https://aspiresys-ai-server.vercel.app";
       const response = await axios.post(
-        "https://dev.aurascc.net/web-bff/customers/login",
+        `${URL}/api/web-bff/customers/login`,
         payload,
         {
           headers: {
@@ -64,7 +62,6 @@ export default function Login() {
       );
 
       if (response.status === 200) {
-        // console.log("User Login successfully:", response.data);
         alert("Login successful!");
         reset();
       } else {

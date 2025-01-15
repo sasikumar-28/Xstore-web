@@ -5,7 +5,7 @@ module.exports = (app) => {
     "/api",
     createProxyMiddleware({
       target: "http://localhost:5000",
-      // target: "https://chat-gpt-server-eight.vercel.app/",
+      // target: "https://aspiresys-ai-server.vercel.app",
       changeOrigin: true,
       secure: false,
     })
