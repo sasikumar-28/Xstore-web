@@ -81,7 +81,7 @@ button:focus-visible {
 } */
 
 
-@layer base {
+/* @layer base {
   :root {
 
 
@@ -243,4 +243,4 @@ button:focus-visible {
   body {
     @apply bg-background text-foreground;
   }
-}
+} */
