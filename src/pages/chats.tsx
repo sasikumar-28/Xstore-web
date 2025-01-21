@@ -17,6 +17,7 @@ export default function ChatInterface() {
   const {
     register,
     handleSubmit,
+    watch,
     setValue,
     reset,
     formState: { errors },
@@ -65,9 +66,18 @@ export default function ChatInterface() {
     } catch (error) {
       console.error("Error:", error);
     }
-
-    reset(); 
+    reset();
     setSelectedFile(null);
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${
+      sizes[i]
+    }`;
   };
 
   return (
@@ -128,7 +138,7 @@ export default function ChatInterface() {
 
           {response && (
             <div
-              className="text-sm w-4/6 text-[#232323] bg-[#FFFFFF] drop-shadow-[0_3px_6px_#00000029] ml-20 mb-24 px-7 py-4 text-[12px] rounded-r-xl rounded-bl-2xl"
+              className="prose prose-sm max-w-none text-sm w-4/6 text-[#232323] bg-[#FFFFFF] drop-shadow-[0_3px_6px_#00000029] ml-20 mb-24 px-7 py-4 text-[12px] rounded-r-xl rounded-bl-2xl"
               dangerouslySetInnerHTML={{ __html: response }}
             />
           )}
@@ -139,33 +149,19 @@ export default function ChatInterface() {
             className="flex flex-col"
           >
             {/* Chat Input */}
-            <div className="mt-auto absolute bottom-24 w-1/2">
-              <div className="relative">
-                <input
-                  placeholder="Type your question here..."
-                  className={`w-full py-4 px-7 rounded-full drop-shadow-lg ${
-                    selectedFile ? "pr-20" : ""
-                  }`}
-                  {...register("query")}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSubmit(onSubmit)();
-                    }
-                  }}
-                />
-                {errors.query && (
-                  <span className="text-red-500 text-sm absolute -bottom-6 left-0">
-                    {errors.query.message}
-                  </span>
-                )}
-
-                {/* Display Selected File */}
+            <div className="absolute bottom-24 w-1/2 rounded-full drop-shadow-lg border bg-[#FFFFFF]">
+              <div className="container mx-auto max-w-4xl px-5">
                 {selectedFile && (
-                  <div className="absolute top-1/4 -translate-y-1/2 flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full">
-                    <span className="text-sm text-gray-600">
-                      {selectedFile.name}
-                    </span>
+                  <div className="flex flex-wrap gap-2 mb-1 items-center px-7 py-1 w-6/12 rounded-full drop-shadow-lg">
+                    <div className="flex flex-col">
+                      <span className="text-sm text-ellipsis truncate max-w-[200px]">
+                        {selectedFile.name}
+                      </span>
+                      <span className="text-xs ">
+                        {formatFileSize(selectedFile.size)}
+                      </span>
+                    </div>
+
                     <button
                       type="button"
                       onClick={handleRemoveFile}
@@ -176,12 +172,34 @@ export default function ChatInterface() {
                   </div>
                 )}
 
-                <button
-                  type="submit"
-                  className="absolute right-6 top-1/2 -translate-y-1/2"
-                >
-                  <img src={sendButtonIcon} width={30} alt="Send" />
-                </button>
+                <div className="flex gap-2">
+                  <textarea
+                    placeholder={
+                      errors.query
+                        ? errors.query.message
+                        : `Type your question here...`
+                    }
+                    className={`w-full px-7 pt-5 rounded-full drop-shadow-lg bg-transparent outline-none ${
+                      errors.query ? "placeholder-red-500" : ""
+                    }`}
+                    {...register("query", { required: "Question is required" })}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleSubmit(onSubmit)();
+                      }
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-6 top-1/2 -translate-y-1/2"
+                    disabled={
+                      !selectedFile || typeof watch("query") === "undefined"
+                    }
+                  >
+                    <img src={sendButtonIcon} width={30} alt="Send" />
+                  </button>
+                </div>
               </div>
             </div>
 
