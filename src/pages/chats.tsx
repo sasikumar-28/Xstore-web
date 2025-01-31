@@ -7,7 +7,8 @@ import chatPageRobot from "@/assets/chat-page-image/bot-chat-logo.png";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
-import { fetchToken } from "@/utils/generateToken";
+import { getAccessToken } from "@/utils/getAccessToken";
+import { Paperclip } from "lucide-react";
 
 type FormValues = {
   query: string;
@@ -43,7 +44,7 @@ export default function ChatInterface() {
   };
 
   const onSubmit = async (data: FormValues) => {
-    const token = await fetchToken();
+    const token = await getAccessToken();
 
     const formData = new FormData();
     if (selectedFile) {
@@ -51,8 +52,11 @@ export default function ChatInterface() {
     }
 
     try {
+      // const URL = "http://localhost:5000";
+      const URL = "https://aspiresys-ai-server.vercel.app";
+
       const response = await axios.post(
-        `http://localhost:5000/api/bff/users/xstore-chatgpt`,
+        `${URL}/api/bff/users/xstore-chatgpt`,
         formData, // Send the form data
         {
           params: { userQuery: data.query }, // Send userQuery as URL parameter
@@ -98,14 +102,6 @@ export default function ChatInterface() {
               <p className="text-[#232323] bg-[#FFFFFF] drop-shadow-[0_3px_6px_#00000029] px-7 py-3 text-sm rounded-r-xl rounded-bl-2xl">
                 How may I help you?
               </p>
-              <Button
-                variant="destructive"
-                className="bg-[#EF4869] text-white font-normal rounded-full hover:bg-[#EF4869] hover:text-white"
-                onClick={() => document.getElementById("fileInput")?.click()}
-                type="button"
-              >
-                + Add a File
-              </Button>
               <input
                 name="file"
                 type="file"
@@ -190,6 +186,17 @@ export default function ChatInterface() {
                       }
                     }}
                   />
+
+                  {/* File selection */}
+                  <Button
+                    className="absolute right-16 top-1/2 -translate-y-1/2 font-normal rounded-full bg-[#804C9E] hover:bg-[#804C9E] text-white"
+                    onClick={() =>
+                      document.getElementById("fileInput")?.click()
+                    }
+                    type="button"
+                  >
+                    <Paperclip />
+                  </Button>
                   <button
                     type="submit"
                     className="absolute right-6 top-1/2 -translate-y-1/2"
