@@ -9,6 +9,7 @@ import loginPageRobot from "@/assets/login-page-image/login-page-robot.png";
 import submitButtonIcon from "@/assets/login-page-image/submit-icon.png";
 import leftQuote from "@/assets/login-page-image/quote-left.png";
 import rightQuote from "@/assets/login-page-image/quote-right.png";
+import { getAccessToken } from "@/utils/getAccessToken";
 
 interface FormValues {
   email: string;
@@ -30,7 +31,6 @@ export default function Login() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
-
     const { email, password } = data;
     const payload = {
       emailId: email,
@@ -38,19 +38,15 @@ export default function Login() {
     };
 
     try {
-      // const token = await fetchToken();
-      // if (!token) {
-      //   alert("Failed to fetch token. Please try again.");
-      //   return;
-      // }
-      const token = localStorage.getItem("registrationToken");
-
+      const token = await getAccessToken();
       if (!token) {
-        alert("Token not found. Please register again.");
+        console.error("Failed to fetch token. Please try again.");
         return;
       }
 
+      // const URL = "http://localhost:5000";
       const URL = "https://aspiresys-ai-server.vercel.app";
+
       const response = await axios.post(
         `${URL}/api/web-bff/customers/login`,
         payload,
@@ -63,14 +59,10 @@ export default function Login() {
       );
 
       if (response.status === 200) {
-        alert("Login successful!");
         navigate("/chats");
         reset();
       } else {
         console.error("Failed to login user:", response.data);
-        alert(
-          `Login failed: ${response.data.message || "Please try again later."}`
-        );
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -81,14 +73,12 @@ export default function Login() {
       } else {
         console.error("Unexpected error:", error);
       }
-      alert("An unexpected error occurred. Please try again.");
     }
   };
 
   return (
     <div className="container w-full flex py-12 md:flex-row items-center justify-around z-10">
       {/* Left Column */}
-      {/* <div className="flex  "> */}
       <div className="absolute top-24 left-24">
         <img src={leftQuote} alt="" width={100} className="" />
       </div>
@@ -114,7 +104,6 @@ export default function Login() {
             elevate your efficiency. It's time to work smarter, not harder!
           </p>
         </div>
-        {/* </div> */}
 
         {/* Right Column - Login Form */}
         <div className=" border border-dashed border-[#804C9E] rounded-lg p-3">
@@ -194,7 +183,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-      {/* <div className="flex  "> */}
       <div className="absolute bottom-24 left-56">
         <img src={rightQuote} alt="" width={100} className="" />
       </div>

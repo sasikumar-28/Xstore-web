@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import axios from "axios";
 import regisernow from "@/assets/registernnow.png";
 import { useNavigate } from "react-router";
+import { getAccessToken } from "@/utils/getAccessToken";
 
 type FormValues = {
   email: string;
@@ -30,27 +31,6 @@ export default function Register() {
     },
   });
 
-  const fetchToken = async (): Promise<string | null> => {
-    const URL = "https://aspiresys-ai-server.vercel.app";
-    // const URL = import.meta.env.VITE_API_URL;
-    try {
-      const response = await axios.get(`${URL}/api/auth/token`);
-      if (response.status === 200 && response.data.access_token) {
-        return response.data.access_token;
-      } else {
-        console.error("Failed to fetch token:", response.data);
-        return null;
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Error fetching token:", error.response || error.message);
-      } else {
-        console.error("Unexpected error:", error);
-      }
-      return null;
-    }
-  };
-
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const { email, password } = data;
     const [localPart] = email.split("@");
@@ -64,16 +44,13 @@ export default function Register() {
     };
 
     try {
-      const token = await fetchToken();
+      const token = await getAccessToken();
       if (!token) {
-        alert("Failed to fetch token. Please try again.");
+        console.error("Failed to fetch token. Please try again.");
         return;
       }
 
-      // Save token in localStorage
-      localStorage.setItem("registrationToken", token);
-      // "https://dev.aurascc.net/web-bff/customers",
-      // "http://localhost:5000/api/web-bff/customers",
+      // const URL = "http://localhost:5000";
       const URL = "https://aspiresys-ai-server.vercel.app";
 
       const response = await axios.post(
@@ -88,16 +65,10 @@ export default function Register() {
       );
 
       if (response.status === 200) {
-        alert("Registration successful!");
         navigate("/login");
         reset();
       } else {
         console.error("Failed to register user:", response.data);
-        alert(
-          `Registration failed: ${
-            response.data.message || "Please try again later."
-          }`
-        );
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -108,7 +79,6 @@ export default function Register() {
       } else {
         console.error("Unexpected error:", error);
       }
-      alert("An unexpected error occurred. Please try again.");
     }
   };
 
