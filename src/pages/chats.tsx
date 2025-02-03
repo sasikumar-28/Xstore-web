@@ -9,6 +9,7 @@ import { useState } from "react";
 import axios from "axios";
 import { getAccessToken } from "@/utils/getAccessToken";
 import { Paperclip } from "lucide-react";
+// import { useToast } from "@/hooks/use-toast";
 
 type FormValues = {
   query: string;
@@ -26,8 +27,8 @@ export default function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [response, setResponse] = useState<string>("");
-
   // const [error, setError] = useState<string | null>(null);
+  // const { toast } = useToast()
 
   const suggestions = [
     "Create a Functional Requirement Document for the attached Transcript",
@@ -46,105 +47,6 @@ export default function ChatInterface() {
     setSelectedFile(null); // Clear the selected file
   };
 
-  // const onSubmit = async (data: FormValues) => {
-  //   if (isLoading) return;
-
-  //   setIsLoading(true);
-
-  //   try {
-  //     const token = await getAccessToken();
-  //     const formData = new FormData();
-
-  //     if (selectedFile) {
-  //       formData.append("file", selectedFile); // Add the file
-  //     }
-
-  //     // const URL = "http://localhost:5000";
-  //     const URL = "https://aspiresys-ai-server.vercel.app";
-
-  //     const response = await axios.post(
-  //       `${URL}/api/bff/users/xstore-chatgpt`,
-  //       formData, // Send the form data
-  //       {
-  //         params: { userQuery: data.query }, // Send userQuery as URL parameter
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         timeout: 360000, // 6 minutes
-  //       }
-  //     );
-  //     setResponse(response.data.xstoreResponse);
-  //     reset(); // Clear form only on success
-  //     setSelectedFile(null);
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //     // abortControllerRef.current = null;
-  //   }
-  // };
-
-  // Enhanced onSubmit function
-  // const onSubmit = async (data: FormValues) => {
-  //   if (isLoading) return;
-
-  //   setIsLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const token = await getAccessToken();
-  //     const formData = new FormData();
-
-  //     if (selectedFile) {
-  //       // Validate file type before upload
-  //       const allowedTypes = [
-  //         "application/pdf",
-  //         "text/plain",
-  //         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  //       ];
-
-  //       if (!allowedTypes.includes(selectedFile.type)) {
-  //         throw new Error("Only PDF, TXT, and DOCX files are allowed");
-  //       }
-
-  //       formData.append("file", selectedFile);
-  //     }
-
-  //     // const URL = "http://localhost:5000";
-  //     const URL = "https://aspiresys-ai-server.vercel.app";
-
-  //     const response = await axios.post(
-  //       `${URL}/api/bff/users/xstore-chatgpt`,
-  //       formData,
-  //       {
-  //         params: { userQuery: data.query },
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           // Let axios set Content-Type automatically
-  //         },
-  //         timeout: 360000,
-  //       }
-  //     );
-
-  //     setResponse(response.data.xstoreResponse);
-  //     reset();
-  //     setSelectedFile(null);
-  //   } catch (error) {
-  //     let errorMessage = "An unexpected error occurred";
-
-  //     if (axios.isAxiosError(error)) {
-  //       errorMessage = error.response?.data?.error || error.message;
-  //     } else if (error instanceof Error) {
-  //       errorMessage = error.message;
-  //     }
-
-  //     setError(errorMessage);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const onSubmit = async (data: FormValues) => {
     if (isLoading) return;
 
@@ -159,11 +61,10 @@ export default function ChatInterface() {
       if (selectedFile) {
         const allowedTypes = [
           "application/pdf",
-          "text/plain",
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         ];
         if (!allowedTypes.includes(selectedFile.type))
-          throw new Error("Only PDF, TXT, and DOCX files are allowed");
+          throw new Error("Only PDF and DOCX files are allowed");
 
         formData.append("file", selectedFile);
       }
@@ -189,7 +90,7 @@ export default function ChatInterface() {
       let responseData = null;
 
       while (status === "processing") {
-        await new Promise((resolve) => setTimeout(resolve, 5000)); // Poll every 5 seconds
+        await new Promise((resolve) => setTimeout(resolve, 8000)); // Poll every 5 seconds
 
         const { data: statusResponse } = await axios.get(
           `${URL}/api/bff/users/xstore-chatgpt/status/${jobId}`
@@ -292,6 +193,10 @@ export default function ChatInterface() {
                 ×
               </button>
             </div>
+
+            toast({
+              description: error,
+            })
           )} */}
 
           {response && (
