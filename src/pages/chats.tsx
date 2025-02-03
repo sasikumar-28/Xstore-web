@@ -27,7 +27,7 @@ export default function ChatInterface() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [response, setResponse] = useState<string>("");
 
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
 
   const suggestions = [
     "Create a Functional Requirement Document for the attached Transcript",
@@ -149,7 +149,7 @@ export default function ChatInterface() {
     if (isLoading) return;
 
     setIsLoading(true);
-    setError(null);
+    // setError(null);
     setResponse("");
 
     try {
@@ -213,7 +213,8 @@ export default function ChatInterface() {
       } else if (error instanceof Error) {
         errorMessage = error.message;
       }
-      setError(errorMessage);
+      console.log("Error:", errorMessage);
+      // setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
