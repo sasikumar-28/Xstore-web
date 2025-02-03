@@ -23,8 +23,11 @@ export default function ChatInterface() {
     reset,
     formState: { errors },
   } = useForm<FormValues>();
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [response, setResponse] = useState<string>("");
+
+  const [error, setError] = useState<string | null>(null);
 
   const suggestions = [
     "Create a Functional Requirement Document for the attached Transcript",
@@ -43,35 +46,177 @@ export default function ChatInterface() {
     setSelectedFile(null); // Clear the selected file
   };
 
-  const onSubmit = async (data: FormValues) => {
-    const token = await getAccessToken();
+  // const onSubmit = async (data: FormValues) => {
+  //   if (isLoading) return;
 
-    const formData = new FormData();
-    if (selectedFile) {
-      formData.append("file", selectedFile); // Add the file
-    }
+  //   setIsLoading(true);
+
+  //   try {
+  //     const token = await getAccessToken();
+  //     const formData = new FormData();
+
+  //     if (selectedFile) {
+  //       formData.append("file", selectedFile); // Add the file
+  //     }
+
+  //     // const URL = "http://localhost:5000";
+  //     const URL = "https://aspiresys-ai-server.vercel.app";
+
+  //     const response = await axios.post(
+  //       `${URL}/api/bff/users/xstore-chatgpt`,
+  //       formData, // Send the form data
+  //       {
+  //         params: { userQuery: data.query }, // Send userQuery as URL parameter
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         timeout: 360000, // 6 minutes
+  //       }
+  //     );
+  //     setResponse(response.data.xstoreResponse);
+  //     reset(); // Clear form only on success
+  //     setSelectedFile(null);
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //     // abortControllerRef.current = null;
+  //   }
+  // };
+
+  // Enhanced onSubmit function
+  // const onSubmit = async (data: FormValues) => {
+  //   if (isLoading) return;
+
+  //   setIsLoading(true);
+  //   setError(null);
+
+  //   try {
+  //     const token = await getAccessToken();
+  //     const formData = new FormData();
+
+  //     if (selectedFile) {
+  //       // Validate file type before upload
+  //       const allowedTypes = [
+  //         "application/pdf",
+  //         "text/plain",
+  //         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  //       ];
+
+  //       if (!allowedTypes.includes(selectedFile.type)) {
+  //         throw new Error("Only PDF, TXT, and DOCX files are allowed");
+  //       }
+
+  //       formData.append("file", selectedFile);
+  //     }
+
+  //     // const URL = "http://localhost:5000";
+  //     const URL = "https://aspiresys-ai-server.vercel.app";
+
+  //     const response = await axios.post(
+  //       `${URL}/api/bff/users/xstore-chatgpt`,
+  //       formData,
+  //       {
+  //         params: { userQuery: data.query },
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           // Let axios set Content-Type automatically
+  //         },
+  //         timeout: 360000,
+  //       }
+  //     );
+
+  //     setResponse(response.data.xstoreResponse);
+  //     reset();
+  //     setSelectedFile(null);
+  //   } catch (error) {
+  //     let errorMessage = "An unexpected error occurred";
+
+  //     if (axios.isAxiosError(error)) {
+  //       errorMessage = error.response?.data?.error || error.message;
+  //     } else if (error instanceof Error) {
+  //       errorMessage = error.message;
+  //     }
+
+  //     setError(errorMessage);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const onSubmit = async (data: FormValues) => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    setError(null);
+    setResponse("");
 
     try {
-      // const URL = "http://localhost:5000";
-      const URL = "https://aspiresys-ai-server.vercel.app";
+      const token = await getAccessToken();
+      const formData = new FormData();
 
-      const response = await axios.post(
+      if (selectedFile) {
+        const allowedTypes = [
+          "application/pdf",
+          "text/plain",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ];
+        if (!allowedTypes.includes(selectedFile.type))
+          throw new Error("Only PDF, TXT, and DOCX files are allowed");
+
+        formData.append("file", selectedFile);
+      }
+
+      const URL = "https://aspiresys-ai-server.vercel.app";
+      // const URL = "http://localhost:5000";
+
+      // Step 1: Submit request and get jobId
+      const { data: jobResponse } = await axios.post(
         `${URL}/api/bff/users/xstore-chatgpt`,
-        formData, // Send the form data
+        formData,
         {
-          params: { userQuery: data.query }, // Send userQuery as URL parameter
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
+          params: { userQuery: data.query },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setResponse(response.data.xstoreResponse);
+
+      const jobId = jobResponse.jobId;
+      if (!jobId) throw new Error("Failed to get jobId");
+
+      // Step 2: Poll for job completion
+      let status = "processing";
+      let responseData = null;
+
+      while (status === "processing") {
+        await new Promise((resolve) => setTimeout(resolve, 5000)); // Poll every 5 seconds
+
+        const { data: statusResponse } = await axios.get(
+          `${URL}/api/bff/users/xstore-chatgpt/status/${jobId}`
+        );
+        status = statusResponse.status;
+
+        if (status === "completed") {
+          responseData = statusResponse.data;
+        } else if (status === "failed") {
+          throw new Error(statusResponse.error || "Job failed");
+        }
+      }
+
+      setResponse(responseData.xstoreResponse);
+      reset(); // Clear form only on success
+      setSelectedFile(null);
     } catch (error) {
-      console.error("Error:", error);
+      let errorMessage = "An unexpected error occurred";
+      if (axios.isAxiosError(error)) {
+        errorMessage = error.response?.data?.error || error.message;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    reset();
-    setSelectedFile(null);
   };
 
   const formatFileSize = (bytes: number) => {
@@ -131,6 +276,22 @@ export default function ChatInterface() {
               </Button>
             ))}
           </div>
+
+          {isLoading && (
+            <div className="ml-20 animate-spin rounded-full h-6 w-6 border-b-2 border-purple-700" />
+          )}
+
+          {/* {error && (
+            <div className="text-red-500 mb-4 pl-20 flex items-center gap-2 animate-fade-in">
+              ⚠️ {error}
+              <button
+                onClick={() => setError(null)}
+                className="text-gray-500 hover:text-gray-700 ml-2"
+              >
+                ×
+              </button>
+            </div>
+          )} */}
 
           {response && (
             <div
@@ -201,7 +362,9 @@ export default function ChatInterface() {
                     type="submit"
                     className="absolute right-6 top-1/2 -translate-y-1/2"
                     disabled={
-                      !selectedFile || typeof watch("query") === "undefined"
+                      !selectedFile ||
+                      typeof watch("query") === "undefined" ||
+                      isLoading
                     }
                   >
                     <img src={sendButtonIcon} width={30} alt="Send" />
