@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { getAccessToken } from "@/utils/getAccessToken";
 
+const formatStringToHtml = (str) => {
+  return str
+    .replace(/\n{2}/g, "<br/><br/>")
+    .replace(/\n/g, "<br/>")
+    .replace(/(\d+)\.\s/g, "<br/><strong>$1.</strong> ");
+};
+
 export default function Customchatbot() {
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState<
@@ -72,7 +79,7 @@ export default function Customchatbot() {
     } catch (error) {
       console.error("Error sending message to chatbot:", error);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -136,8 +143,12 @@ export default function Customchatbot() {
                   borderRadius: "15px 15px 15px 0px",
                   width: "100%",
                 }}
-                dangerouslySetInnerHTML={{ __html: chat.response }}
-              />
+                dangerouslySetInnerHTML={{
+                  __html: formatStringToHtml(chat.response),
+                }}
+              >
+                {/* {chat.response} */}
+              </div>
             </div>
           </div>
         ))}
