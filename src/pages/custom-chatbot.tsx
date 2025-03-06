@@ -10,72 +10,90 @@ export default function Customchatbot() {
   console.log(currentResponse);
   const [loading, setLoading] = useState<boolean>(false); // Loading state
 
-  const getChatData = async () => {
-    setLoading(true); // Start loading
+  const getChatData = async (retryCount: number = 0) => {
+    setLoading(true);
     try {
       const token = await getAccessToken();
       if (!token) throw new Error("Failed to fetch token");
-
-      const URL = `${
-        import.meta.env.VITE_SERVER_BASE_URL
-      }/api/web-bff/chatStream`;
-      const response = await fetch(URL, {
-        signal: AbortSignal.timeout(70000),
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          flowId: "3VUX9NHM6Z",
-          flowAliasId: "6L7YPCACLX",
-          input: input,
-        }),
-      });
-
-      if (!response.body) throw new Error("Readable stream not supported");
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      setChatHistory((prev) => [...prev, { query: input, response: "" }]);
-      setInput("");
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
-
-        for (const line of lines) {
-          if (line.startsWith("data:")) {
-            try {
-              const parsedData = JSON.parse(line.slice(5).trim());
-              const newText = parsedData.index === 0 ? parsedData.data : "";
-
-              setCurrentResponse((prev) => prev + newText);
-
-              setChatHistory((prev) => {
-                const updatedHistory = [...prev];
-                updatedHistory[updatedHistory.length - 1].response = newText;
-                return updatedHistory;
-              });
-            } catch (error) {
-              console.error("Error parsing JSON:", error);
+  
+      const URL = `${import.meta.env.VITE_SERVER_BASE_URL}/api/web-bff/chatStream`;
+  
+      for (let attempt = 1; attempt <= retryCount; attempt++) {
+        try {
+          const response = await fetch(URL, {
+            signal: AbortSignal.timeout(120000),
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              flowId: "3VUX9NHM6Z",
+              flowAliasId: "6L7YPCACLX",
+              input: input,
+            }),
+          });
+  
+          if (response.status === 503) {
+            if (attempt < retryCount) {
+              console.warn(`Attempt ${attempt} failed, retrying...`);
+              await new Promise((res) => setTimeout(res, 2000)); // Wait 2 seconds before retry
+              continue;
+            } else {
+              throw new Error("Server is temporarily unavailable. Please try again later.");
             }
           }
+  
+          if (!response.body) throw new Error("Readable stream not supported");
+  
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+  
+          setChatHistory((prev) => [...prev, { query: input, response: "" }]);
+          setInput("");
+  
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+  
+            for (const line of lines) {
+              if (line.startsWith("data:")) {
+                try {
+                  const parsedData = JSON.parse(line.slice(5).trim());
+                  const newText = parsedData.index === 0 ? parsedData.data : "";
+  
+                  setCurrentResponse((prev) => prev + newText);
+  
+                  setChatHistory((prev) => {
+                    const updatedHistory = [...prev];
+                    updatedHistory[updatedHistory.length - 1].response = newText;
+                    return updatedHistory;
+                  });
+                } catch (error) {
+                  console.error("Error parsing JSON:", error);
+                }
+              }
+            }
+          }
+  
+          setCurrentResponse("");
+          return; // Exit function if request is successful
+        } catch (error) {
+          console.error(`Error on attempt ${attempt}:`, error);
+          if (attempt === retryCount) throw error; // Throw error after all retries
         }
       }
-
-      setCurrentResponse("");
     } catch (error) {
       console.error("Error sending message to chatbot:", error);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
+  
 
   return (
     <div
@@ -164,7 +182,7 @@ export default function Customchatbot() {
           style={styles.inputField}
         />
         <button
-          onClick={getChatData}
+          onClick={() => getChatData()} 
           style={styles.submitButton}
           disabled={loading}
         >
