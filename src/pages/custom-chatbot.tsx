@@ -1,19 +1,26 @@
 import React, { useState } from "react";
 import { getAccessToken } from "@/utils/getAccessToken";
 
-const formatStringToHtml = (str) => {
+const formatStringToHtml = (str: string) => {
   return str
     .replace(/\n{2}/g, "<br/><br/>")
     .replace(/\n/g, "<br/>")
     .replace(/(\d+)\.\s/g, "<br/><strong>$1.</strong> ");
 };
 
+// const cleanResponse = (html: string) => {
+//   const decodedHtml = decode(html);
+//   return DOMPurify.sanitize(decodedHtml, {
+//     ALLOWED_TAGS: ["b", "i", "a", "p"],
+//   });
+// };
+
 export default function Customchatbot() {
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState<
     { query: string; response: string }[]
   >([]);
-  const [currentResponse, setCurrentResponse] = useState<string>("");
+  // const [currentResponse, setCurrentResponse] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false); // Loading state
 
   const getChatData = async () => {
@@ -61,7 +68,7 @@ export default function Customchatbot() {
               const parsedData = JSON.parse(line.slice(5).trim());
               const newText = parsedData.index === 0 ? parsedData.data : "";
 
-              setCurrentResponse((prev) => prev + newText);
+              // setCurrentResponse((prev) => prev + newText);
 
               setChatHistory((prev) => {
                 const updatedHistory = [...prev];
@@ -75,7 +82,7 @@ export default function Customchatbot() {
         }
       }
 
-      setCurrentResponse("");
+      // setCurrentResponse("");
     } catch (error) {
       console.error("Error sending message to chatbot:", error);
     } finally {
