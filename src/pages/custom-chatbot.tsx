@@ -1,24 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { getAccessToken } from "@/utils/getAccessToken";
 
 export default function Customchatbot() {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState<
     { query: string; response: string }[]
   >([]);
   const [currentResponse, setCurrentResponse] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false); // Loading state
-
-  const handleAddFileClick = () => fileInputRef.current?.click();
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) setSelectedFile(file);
-  };
-
-  const handleRemoveFile = () => setSelectedFile(null);
 
   const getChatData = async () => {
     setLoading(true); // Start loading
@@ -155,12 +144,15 @@ export default function Customchatbot() {
       </div>
 
       {/* Input field */}
+      {chatHistory.length === 0 && (
+        <h1 style={styles.heading}>What can I help you with?</h1>
+      )}
       <div
         style={{
           position: "relative",
           width: "100%",
           maxWidth: "600px",
-          marginBottom: "100px",
+          marginBottom: "70px",
         }}
       >
         <input
@@ -235,5 +227,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "50%",
     display: "inline-block",
     animation: "spin 1s linear infinite",
+  },
+  heading: {
+    textAlign: "center",
+    fontSize: "24px",
+    fontWeight: "bold",
+    marginBottom: "50px",
   },
 };
