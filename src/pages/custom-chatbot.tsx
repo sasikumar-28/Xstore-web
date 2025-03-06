@@ -31,7 +31,7 @@ export default function Customchatbot() {
 
       const URL = `${
         import.meta.env.VITE_SERVER_BASE_URL
-      }api/web-bff/chatStream`;
+      }/api/web-bff/chatStream`;
       const response = await fetch(URL, {
         signal: AbortSignal.timeout(30000),
         method: "POST",
