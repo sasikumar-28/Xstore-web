@@ -6,6 +6,7 @@ import Login from "@/pages/login";
 import Register from "@/pages/register";
 import Chats from "@/pages/chats";
 import Home from "@/pages/home";
+import Customchatbot from "@/pages/custom-chatbot";
 
 const routes = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const routes = createBrowserRouter([
         path: "chats",
         element: <Chats />,
       },
+      {
+        path: "Customchatbot",
+        element: <Customchatbot/>
+      }
     ],
   },
   {
