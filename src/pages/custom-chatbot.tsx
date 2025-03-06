@@ -90,39 +90,63 @@ export default function Customchatbot() {
   return (
     <div
       style={{
-        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "20px",
+        width: "100vw",
+        height: "80vh",
       }}
     >
-      {/* Header Section */}
-      <div style={styles.header}>
-        <div style={{ flex: 1 }}></div>
-        <div style={styles.logoContainer}>
-          <img
-            src="/logo1.webp"
-            alt="Aspire Logo"
-            width={60}
-            height={16}
-            style={styles.logo}
-          />
-        </div>
+      {/* Logo */}
+      <div style={styles.logoContainer}>
+        <img
+          src="/logo1.webp"
+          alt="Aspire Logo"
+          width={60}
+          height={16}
+          style={styles.logo}
+        />
       </div>
-      {/* Chat History Display */}
-      <div className="w-[600px]">
+
+      {/* Chat History */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "600px",
+          overflowY: "auto",
+          marginBottom: "20px",
+          height: "300px",
+          msOverflowY: "scroll",
+        }}
+      >
         {chatHistory.map((chat, index) => (
           <div key={index}>
-            <div className="flex justify-end">
-              <p className="text-sm text-[white] bg-[#804C9E] rounded-l-xl p-3 m-3 mb-4 rounded-br-xl inline-block max-w-[75%]">
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "white",
+                  backgroundColor: "#804C9E",
+                  borderRadius: "15px 15px 0px 15px",
+                  padding: "12px",
+                  margin: "10px 0",
+                  maxWidth: "75%",
+                }}
+              >
                 {chat.query}
               </p>
             </div>
-            <div className="mt-4">
+            <div style={{ marginTop: "10px" }}>
               <div
-                className="text-sm text-[#232323] bg-[#FFFFFF] px-7 py-4 rounded-r-xl rounded-bl-2xl w-full"
+                style={{
+                  fontSize: "14px",
+                  color: "#232323",
+                  backgroundColor: "white",
+                  padding: "15px",
+                  borderRadius: "15px 15px 15px 0px",
+                  width: "100%",
+                }}
                 dangerouslySetInnerHTML={{ __html: chat.response }}
               />
             </div>
@@ -130,7 +154,7 @@ export default function Customchatbot() {
         ))}
       </div>
 
-      {/* Bottom Section with Textarea and Button */}
+      {/* Input field */}
       <div
         style={{
           position: "relative",
@@ -174,7 +198,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
   },
   logo: {
-    marginRight: "400px",
     marginBottom: "1px",
   },
   inputField: {
