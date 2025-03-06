@@ -96,6 +96,7 @@ export default function Customchatbot() {
         justifyContent: "center",
         width: "100vw",
         height: "80vh",
+        overflowY: "scroll",
       }}
     >
       {/* Logo */}
@@ -116,8 +117,7 @@ export default function Customchatbot() {
           maxWidth: "600px",
           overflowY: "auto",
           marginBottom: "20px",
-          height: "300px",
-          msOverflowY: "scroll",
+          minHeight: "400px",
         }}
       >
         {chatHistory.map((chat, index) => (
@@ -160,7 +160,7 @@ export default function Customchatbot() {
           position: "relative",
           width: "100%",
           maxWidth: "600px",
-          marginBottom: "100px",
+          marginBottom: "10px",
         }}
       >
         <input
