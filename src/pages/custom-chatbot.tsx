@@ -28,7 +28,7 @@ export default function Customchatbot() {
         },
         body: JSON.stringify({
           flowId: "3VUX9NHM6Z",
-          flowAliasId: "2PGRJZR3RB",
+          flowAliasId: "6L7YPCACLX",
           input: input,
         }),
       });
