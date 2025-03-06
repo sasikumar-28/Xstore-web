@@ -111,7 +111,7 @@ export default function Customchatbot() {
         justifyContent: chatHistory.length > 0 ? "space-between" : "center",
         width: "100vw",
         // minHeight: "80vh",
-        height: "80%",
+        height: "65%",
       }}
     >
       {/* Logo */}
