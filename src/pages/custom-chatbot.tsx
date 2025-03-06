@@ -1,27 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getAccessToken } from "@/utils/getAccessToken";
+import { Icon } from "@iconify/react";
 
 const formatStringToHtml = (str: string) => {
   return str
-    .replace(/\n{2}/g, "<br/><br/>")
-    .replace(/\n/g, "<br/>")
-    .replace(/(\d+)\.\s/g, "<br/><strong>$1.</strong> ");
+    .split("\\n")
+    .map((line, index) => {
+      const numberedPoint = line.match(/^(\d+)\.\s(.+)/);
+      if (numberedPoint) {
+        return `<p key=${index} class="mb-2"><strong>${numberedPoint[1]}.</strong> ${numberedPoint[2]}</p>`;
+      }
+      return line.trim() ? `<p key=${index} class="mb-2">${line}</p>` : "<br/>";
+    })
+    .join("");
 };
-
-// const cleanResponse = (html: string) => {
-//   const decodedHtml = decode(html);
-//   return DOMPurify.sanitize(decodedHtml, {
-//     ALLOWED_TAGS: ["b", "i", "a", "p"],
-//   });
-// };
 
 export default function Customchatbot() {
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState<
     { query: string; response: string }[]
   >([]);
-  // const [currentResponse, setCurrentResponse] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false); // Loading state
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const getChatData = async () => {
     setLoading(true); // Start loading
@@ -33,7 +33,7 @@ export default function Customchatbot() {
         import.meta.env.VITE_SERVER_BASE_URL
       }/api/web-bff/chatStream`;
       const response = await fetch(URL, {
-        signal: AbortSignal.timeout(30000),
+        signal: AbortSignal.timeout(60000),
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,6 +61,11 @@ export default function Customchatbot() {
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n");
         buffer = lines.pop() || "";
+
+        // if (chatContainerRef.current) {
+        //   chatContainerRef.current.scrollTop =
+        //     chatContainerRef.current.scrollHeight;
+        // }
 
         for (const line of lines) {
           if (line.startsWith("data:")) {
@@ -90,16 +95,23 @@ export default function Customchatbot() {
     }
   };
 
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [chatHistory]);
+
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: chatHistory.length > 0 ? "space-between" : "center",
         width: "100vw",
-        height: "80vh",
-        overflowY: "scroll",
+        // minHeight: "80vh",
+        height: "80%",
       }}
     >
       {/* Logo */}
@@ -114,52 +126,68 @@ export default function Customchatbot() {
       </div>
 
       {/* Chat History */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "600px",
-          overflowY: "auto",
-          marginBottom: "20px",
-          // height: "350px",
-        }}
-      >
-        {chatHistory.map((chat, index) => (
-          <div key={index}>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <p
-                style={{
-                  fontSize: "14px",
-                  color: "white",
-                  backgroundColor: "#804C9E",
-                  borderRadius: "15px 15px 0px 15px",
-                  padding: "12px",
-                  margin: "10px 0",
-                  maxWidth: "75%",
-                }}
-              >
-                {chat.query}
-              </p>
-            </div>
-            <div style={{ marginTop: "10px" }}>
+      {chatHistory.length > 0 && (
+        <div
+          ref={chatContainerRef}
+          style={{
+            width: "100%",
+            maxWidth: "600px",
+            overflowY: "auto",
+            marginBottom: "20px",
+            height: "100%",
+            msOverflowY: "scroll",
+            scrollBehavior: "smooth",
+            padding: "20px",
+          }}
+        >
+          {chatHistory.map((chat, index) => (
+            <div key={index}>
               <div
                 style={{
-                  fontSize: "14px",
-                  color: "#232323",
-                  backgroundColor: "white",
-                  padding: "15px",
-                  borderRadius: "15px 15px 15px 0px",
-                  width: "100%",
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: formatStringToHtml(chat.response),
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: "15px",
                 }}
               >
-                {/* {chat.response} */}
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "white",
+                    backgroundColor: "#804C9E",
+                    borderRadius: "15px 15px 0px 15px",
+                    padding: "12px",
+                    margin: "10px 0",
+                    maxWidth: "75%",
+                  }}
+                >
+                  {chat.query}
+                </p>
               </div>
+              <div style={{ marginTop: "10px" }}>
+                <div
+                  style={{
+                    fontSize: "14px",
+                    color: "#232323",
+                    backgroundColor: "white",
+                    padding: "15px",
+                    borderRadius: "15px 15px 15px 0px",
+                    width: "100%",
+                    lineHeight: "1.5",
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: formatStringToHtml(chat.response),
+                  }}
+                >
+                  {/* {chat.response} */}
+                </div>
+              </div>
+              <div className="w-full h-[1px] mt-2 bg-slate-300"></div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Input field */}
       {chatHistory.length === 0 && (
@@ -170,7 +198,7 @@ export default function Customchatbot() {
           position: "relative",
           width: "100%",
           maxWidth: "600px",
-          marginBottom: "10px",
+          marginBottom: "5px",
         }}
       >
         <input
@@ -180,13 +208,24 @@ export default function Customchatbot() {
           placeholder="Ask me anything"
           style={styles.inputField}
         />
-        <button
-          onClick={getChatData}
-          style={styles.submitButton}
-          disabled={loading}
-        >
-          {loading ? <span style={styles.loader} /> : "➤"}
-        </button>
+        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 pr-2">
+          {loading ? (
+            <Icon
+              icon="line-md:loading-loop"
+              width="40"
+              height="40"
+              color="#804C9E"
+            />
+          ) : (
+            <button
+              onClick={getChatData}
+              style={styles.submitButton}
+              disabled={loading}
+            >
+              ➤
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -230,7 +269,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "50%",
     border: "none",
     cursor: "pointer",
-    fontSize: "16px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -251,5 +289,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "24px",
     fontWeight: "bold",
     marginBottom: "50px",
+  },
+  chatMessage: {
+    marginBottom: "12px",
+    lineHeight: "1.5",
+  },
+  paragraph: {
+    marginBottom: "8px",
   },
 };

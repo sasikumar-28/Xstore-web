@@ -6,7 +6,7 @@ const AppLayout = () => {
   return (
     <>
       <Header />
-      <main className="bg-[#FAFAFA]">
+      <main className="bg-[#FAFAFA] h-full">
         {/* Dynamically renders the child route */}
         <Outlet />
       </main>
