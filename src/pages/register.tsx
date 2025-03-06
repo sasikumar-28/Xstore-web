@@ -51,7 +51,7 @@ export default function Register() {
       }
 
       // const URL = "http://localhost:5000";
-      const URL = "https://aspiresys-ai-server.vercel.app";
+      const URL = import.meta.env.VITE_SERVER_BASE_URL
 
       const response = await axios.post(
         `${URL}/api/web-bff/customers`,

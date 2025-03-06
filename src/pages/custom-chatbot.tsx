@@ -7,6 +7,7 @@ export default function Customchatbot() {
     { query: string; response: string }[]
   >([]);
   const [currentResponse, setCurrentResponse] = useState<string>("");
+  console.log(currentResponse);
   const [loading, setLoading] = useState<boolean>(false); // Loading state
 
   const getChatData = async () => {
@@ -17,7 +18,7 @@ export default function Customchatbot() {
 
       const URL = `${
         import.meta.env.VITE_SERVER_BASE_URL
-      }api/web-bff/chatStream`;
+      }/api/web-bff/chatStream`;
       const response = await fetch(URL, {
         signal: AbortSignal.timeout(30000),
         method: "POST",
