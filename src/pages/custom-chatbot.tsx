@@ -106,7 +106,7 @@ export default function Customchatbot() {
           maxWidth: "600px",
           overflowY: "auto",
           marginBottom: "20px",
-          minHeight: "400px",
+          minHeight: "350px",
         }}
       >
         {chatHistory.map((chat, index) => (
