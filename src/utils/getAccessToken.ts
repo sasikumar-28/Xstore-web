@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAccessToken = async (): Promise<string | null> => {
-  const URL = "https://aspiresys-ai-server.vercel.app";
+  const URL = import.meta.env.VITE_SERVER_BASE_URL;
   // const URL = "http://localhost:5000";
   try {
     const response = await axios.get(`${URL}/api/auth/token`);
