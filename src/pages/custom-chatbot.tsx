@@ -32,7 +32,7 @@ export default function Customchatbot() {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        ...(options.headers || {}),
+        // ...(options.headers || {}),
       },
     }).then((res) => res.json());
   };
