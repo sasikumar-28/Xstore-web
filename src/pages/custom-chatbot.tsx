@@ -22,64 +22,44 @@ export default function Customchatbot() {
   >([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [jobId, setJobId] = useState<string>("");
+  const [jobId, setJobId] = useState<string | null>(null);
 
-  const getChatData = async () => {
-    setLoading(true); // Start loading
-    try {
-      const token = await getAccessToken();
-      if (!token) throw new Error("Failed to fetch token");
-
-      const URL = `${
-        import.meta.env.VITE_SERVER_BASE_URL
-      }/api/web-bff/chatStream`;
-      const response = await fetch(URL, {
-        signal: AbortSignal.timeout(60000),
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          flowId: "3VUX9NHM6Z",
-          flowAliasId: "2PGRJZR3RB",
-          input: input,
-        }),
-      }).then((res) => res.json());
-      setJobId(response.jobId);
-      setChatHistory((prev) => [...prev, { query: input, response: "" }]);
-      setInput("");
-    } catch (error) {
-      console.error("Error sending message to chatbot:", error);
-    }
+  const fetchWithToken = async (url: string, options = {}) => {
+    const token = await getAccessToken();
+    if (!token) throw new Error("Failed to fetch token");
+    return fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        ...(options.headers || {}),
+      },
+    }).then((res) => res.json());
   };
 
-  const getStatus = async () => {
-    try {
-      const token = await getAccessToken();
-      if (!token) throw new Error("Failed to fetch token");
+  const getChatData = async () => {
+    if (!input.trim()) return;
 
-      const URL = `${
-        import.meta.env.VITE_SERVER_BASE_URL
-      }/api/web-bff/chatStream/${jobId}`;
-      const response = await fetch(URL, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }).then((res) => res.json());
-      if (response.status === "completed") {
-        setJobId("");
-        setLoading(false);
-        setChatHistory((prevChatHistory) => {
-          const updatedChatHistory = [...prevChatHistory];
-          updatedChatHistory[prevChatHistory.length] = {
-            ...updatedChatHistory[prevChatHistory.length],
-            response: response.data.outputEvents["Event 1"].content,
-          };
-          return updatedChatHistory;
-        });
+    setLoading(true);
+    try {
+      const response = await fetchWithToken(
+        `${import.meta.env.VITE_SERVER_BASE_URL}/api/web-bff/chatStream`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            flowId: "3VUX9NHM6Z",
+            flowAliasId: "2PGRJZR3RB",
+            input: input.trim(),
+          }),
+        }
+      );
+
+      if (response.jobId) {
+        setJobId(response.jobId);
+        setChatHistory((prev) => [...prev, { query: input, response: "" }]);
+        setInput("");
+      } else {
+        throw new Error("Invalid job ID received");
       }
     } catch (error) {
       console.error("Error sending message to chatbot:", error);
@@ -87,13 +67,47 @@ export default function Customchatbot() {
     }
   };
 
+  const getStatus = async () => {
+    if (!jobId) return;
+
+    try {
+      const response = await fetchWithToken(
+        `${
+          import.meta.env.VITE_SERVER_BASE_URL
+        }/api/web-bff/chatStream/${jobId}`
+      );
+
+      if (response.status === "completed") {
+        setChatHistory((prev) =>
+          prev.map((chat, index) =>
+            index === prev.length - 1
+              ? {
+                  ...chat,
+                  response:
+                    response.data?.outputEvents?.["Event 1"]?.content ||
+                    "No response",
+                }
+              : chat
+          )
+        );
+        setJobId(null);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching chat status:", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    if (!loading) return;
+    if (!jobId) return;
+
     const interval = setInterval(() => {
       getStatus();
-    }, 5000);
+    }, 3000);
+
     return () => clearInterval(interval);
-  }, [loading]);
+  }, [jobId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
