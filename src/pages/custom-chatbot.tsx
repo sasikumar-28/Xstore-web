@@ -22,6 +22,7 @@ export default function Customchatbot() {
   >([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [jobId, setJobId] = useState<string>("");
 
   const getChatData = async () => {
     setLoading(true); // Start loading
@@ -44,56 +45,55 @@ export default function Customchatbot() {
           flowAliasId: "2PGRJZR3RB",
           input: input,
         }),
-      });
-
-      if (!response.body) throw new Error("Readable stream not supported");
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
+      }).then((res) => res.json());
+      setJobId(response.jobId);
       setChatHistory((prev) => [...prev, { query: input, response: "" }]);
       setInput("");
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
-
-        // if (chatContainerRef.current) {
-        //   chatContainerRef.current.scrollTop =
-        //     chatContainerRef.current.scrollHeight;
-        // }
-
-        for (const line of lines) {
-          if (line.startsWith("data:")) {
-            try {
-              const parsedData = JSON.parse(line.slice(5).trim());
-              const newText = parsedData.index === 0 ? parsedData.data : "";
-
-              // setCurrentResponse((prev) => prev + newText);
-
-              setChatHistory((prev) => {
-                const updatedHistory = [...prev];
-                updatedHistory[updatedHistory.length - 1].response = newText;
-                return updatedHistory;
-              });
-            } catch (error) {
-              console.error("Error parsing JSON:", error);
-            }
-          }
-        }
-      }
-
-      // setCurrentResponse("");
     } catch (error) {
       console.error("Error sending message to chatbot:", error);
-    } finally {
+    }
+  };
+
+  const getStatus = async () => {
+    try {
+      const token = await getAccessToken();
+      if (!token) throw new Error("Failed to fetch token");
+
+      const URL = `${
+        import.meta.env.VITE_SERVER_BASE_URL
+      }/api/web-bff/chatStream/${jobId}`;
+      const response = await fetch(URL, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((res) => res.json());
+      if (response.status === "completed") {
+        setJobId("");
+        setLoading(false);
+        setChatHistory((prevChatHistory) => {
+          const updatedChatHistory = [...prevChatHistory];
+          updatedChatHistory[prevChatHistory.length] = {
+            ...updatedChatHistory[prevChatHistory.length],
+            response: response.data.outputEvents["Event 1"].content,
+          };
+          return updatedChatHistory;
+        });
+      }
+    } catch (error) {
+      console.error("Error sending message to chatbot:", error);
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!loading) return;
+    const interval = setInterval(() => {
+      getStatus();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [loading]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -142,48 +142,52 @@ export default function Customchatbot() {
         >
           {chatHistory.map((chat, index) => (
             <div key={index}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  marginTop: "15px",
-                }}
-              >
-                <p
-                  style={{
-                    fontSize: "14px",
-                    color: "white",
-                    backgroundColor: "#804C9E",
-                    borderRadius: "15px 15px 0px 15px",
-                    padding: "12px",
-                    margin: "10px 0",
-                    maxWidth: "75%",
-                  }}
-                >
-                  {chat.query}
-                </p>
-              </div>
-              <div style={{ marginTop: "10px" }}>
+              {chat.query && (
                 <div
                   style={{
-                    fontSize: "14px",
-                    color: "#232323",
-                    backgroundColor: "white",
-                    padding: "15px",
-                    borderRadius: "15px 15px 15px 0px",
-                    width: "100%",
-                    lineHeight: "1.5",
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
-                  }}
-                  dangerouslySetInnerHTML={{
-                    __html: formatStringToHtml(chat.response),
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginTop: "15px",
                   }}
                 >
-                  {/* {chat.response} */}
+                  <p
+                    style={{
+                      fontSize: "14px",
+                      color: "white",
+                      backgroundColor: "#804C9E",
+                      borderRadius: "15px 15px 0px 15px",
+                      padding: "12px",
+                      margin: "10px 0",
+                      maxWidth: "75%",
+                    }}
+                  >
+                    {chat.query}
+                  </p>
                 </div>
-              </div>
-              <div className="w-full h-[1px] mt-2 bg-slate-300"></div>
+              )}
+              {chat.response && (
+                <div style={{ marginTop: "10px" }}>
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      color: "#232323",
+                      backgroundColor: "white",
+                      padding: "15px",
+                      borderRadius: "15px 15px 15px 0px",
+                      width: "100%",
+                      lineHeight: "1.5",
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                    }}
+                    dangerouslySetInnerHTML={{
+                      __html: formatStringToHtml(chat?.response),
+                    }}
+                  >
+                    {/* {chat.response} */}
+                  </div>
+                  <div className="w-full h-[1px] mt-2 bg-slate-300"></div>
+                </div>
+              )}
             </div>
           ))}
         </div>
