@@ -19,22 +19,22 @@ const routes = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
-      },
-      {
         path: "chats",
         element: <Chats />,
       },
       {
         path: "Customchatbot",
-        element: <Customchatbot/>
-      }
+        element: <Customchatbot />,
+      },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "register",
+    element: <Register />,
   },
   {
     path: "*",

@@ -1,3 +1,4 @@
+import Navbar from "@/components/custom/Navbar";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { Outlet } from "react-router";
@@ -7,7 +8,7 @@ const AppLayout = () => {
     <>
       <Header />
       <main className="bg-[#FAFAFA] h-full">
-        {/* Dynamically renders the child route */}
+        <Navbar />
         <Outlet />
       </main>
       <Footer />
