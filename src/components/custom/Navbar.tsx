@@ -29,7 +29,7 @@ const Navbar = () => {
           <Menu className="w-6 h-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="bg-white p-6 w-64">
+      <SheetContent>
         <SheetHeader>
           <SheetTitle className="text-2xl font-semibold tracking-wide">
             ASPIRE's AI
