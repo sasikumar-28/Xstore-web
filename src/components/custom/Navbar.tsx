@@ -32,7 +32,7 @@ const Navbar = () => {
       <SheetContent side="left" className="bg-white p-6 w-64">
         <SheetHeader>
           <SheetTitle className="text-2xl font-semibold tracking-wide">
-            ASPIRE
+            ASPIRE's AI
           </SheetTitle>
         </SheetHeader>
         <ScrollArea className="mt-4 h-[calc(100vh-100px)]">
@@ -55,8 +55,15 @@ const Navbar = () => {
                   <AccordionContent className="ml-4 space-y-2">
                     {item.children?.map((child, index) =>
                       child.children ? (
-                        <AccordionItem key={index} value={`child-${index}`}>
-                          <AccordionTrigger className="text-sm font-semibold text-muted-foreground flex justify-between">
+                        <AccordionItem
+                          key={index}
+                          value={`child-${index}`}
+                          style={{ borderBottom: "none" }}
+                        >
+                          <AccordionTrigger
+                            className="text-sm text-muted-foreground flex justify-between"
+                            style={{ textDecoration: "none" }}
+                          >
                             {child.link ? (
                               <div
                                 onClick={() => navigate(String(child?.link))}
@@ -84,7 +91,9 @@ const Navbar = () => {
                                     {subChild.name}
                                   </div>
                                 ) : (
-                                  subChild.name
+                                  <div className="text-sm font-medium">
+                                    {subChild.name}
+                                  </div>
                                 )}
                               </div>
                             ))}
@@ -93,8 +102,9 @@ const Navbar = () => {
                       ) : (
                         <div
                           key={index}
-                          className="cursor-pointer hover:underline"
+                          className="cursor-pointer hover:underline text-sm text-muted-foreground flex justify-between"
                           onClick={() => navigate(String(child?.link))}
+                          style={{ fontWeight: 500 }}
                         >
                           {child.name}
                         </div>

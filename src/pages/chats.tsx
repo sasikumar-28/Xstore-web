@@ -69,7 +69,7 @@ export default function ChatInterface() {
         formData.append("file", selectedFile);
       }
 
-      const URL = import.meta.env.VITE_SERVER_BASE_URL
+      const URL = import.meta.env.VITE_SERVER_BASE_URL;
       // const URL = "http://localhost:5000";
 
       // Step 1: Submit request and get jobId

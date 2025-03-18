@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
 import { getAccessToken } from "@/utils/getAccessToken";
-import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { getRequirementCapture } from "@/server/gen-ai";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
-const formatStringToHtml = (str: string) => {
+export const formatStringToHtml = (str: string) => {
   return str
     .split("\\n")
     .map((line, index) => {
@@ -19,13 +21,14 @@ const formatStringToHtml = (str: string) => {
 };
 
 export default function RequirementCapture() {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState<File | null>(null);
   const [chatHistory, setChatHistory] = useState<
     { query: string; response: string }[]
   >([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [jobId, setJobId] = useState<string | null>(null);
+  const [key, setKey] = useState(0);
 
   const fetchWithToken = async (url: string, options = {}) => {
     const token = await getAccessToken();
@@ -40,36 +43,6 @@ export default function RequirementCapture() {
     }).then((res) => res.json());
   };
 
-  const getChatData = async () => {
-    if (!input.trim()) return;
-
-    setLoading(true);
-    try {
-      const response = await fetchWithToken(
-        `${import.meta.env.VITE_SERVER_BASE_URL}/api/web-bff/chatStream`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            flowId: "3VUX9NHM6Z",
-            flowAliasId: "2PGRJZR3RB",
-            input: input.trim(),
-          }),
-        }
-      );
-
-      if (response.jobId) {
-        setJobId(response.jobId);
-        setChatHistory((prev) => [...prev, { query: input, response: "" }]);
-        setInput("");
-      } else {
-        throw new Error("Invalid job ID received");
-      }
-    } catch (error) {
-      console.error("Error sending message to chatbot:", error);
-      setLoading(false);
-    }
-  };
-
   const getStatus = async () => {
     if (!jobId) return;
 
@@ -79,8 +52,10 @@ export default function RequirementCapture() {
           import.meta.env.VITE_SERVER_BASE_URL
         }/api/web-bff/chatStream/${jobId}`
       );
-
+      console.log("first");
       if (response.status === "completed") {
+        console.log("second");
+
         setChatHistory((prev) =>
           prev.map((chat, index) =>
             index === prev.length - 1
@@ -93,6 +68,8 @@ export default function RequirementCapture() {
               : chat
           )
         );
+        setInput(null);
+        setKey((p) => p + 1);
         setJobId(null);
         setLoading(false);
       }
@@ -119,6 +96,28 @@ export default function RequirementCapture() {
     }
   }, [chatHistory]);
 
+  const handleFileChange = (e: any) => {
+    const file = e.target.files[0];
+    console.log(file.name, "the file");
+    if (file) setInput(file);
+  };
+
+  const handleFileUpload = () => {
+    if (!input) return;
+    setLoading(true);
+    getRequirementCapture(input)
+      .then((res) => {
+        setJobId(res.jobId);
+        setChatHistory((prev) => [
+          ...prev,
+          { query: input.name, response: "" },
+        ]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div
       style={{
@@ -128,7 +127,7 @@ export default function RequirementCapture() {
         justifyContent: chatHistory.length > 0 ? "space-between" : "center",
         width: "100vw",
         // minHeight: "80vh",
-        height: "65%",
+        height: "70%",
       }}
     >
       {/* Logo */}
@@ -196,11 +195,11 @@ export default function RequirementCapture() {
                       whiteSpace: "pre-wrap",
                       wordBreak: "break-word",
                     }}
-                    dangerouslySetInnerHTML={{
-                      __html: formatStringToHtml(chat?.response),
-                    }}
+                    // dangerouslySetInnerHTML={{
+                    //   __html: formatStringToHtml(chat?.response),
+                    // }}
                   >
-                    {/* {chat.response} */}
+                    {chat.response}
                   </div>
                   <div className="w-full h-[1px] mt-2 bg-slate-300"></div>
                 </div>
@@ -220,38 +219,32 @@ export default function RequirementCapture() {
             <div className="relative w-full">
               <Input
                 type="file"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => handleFileChange(e)}
                 placeholder="Ask me anything"
                 className="pr-10  focus:border-purple-500 h-12 rounded-lg w-full rounded-full"
                 style={{ border: "1px dashed gray" }}
+                accept=".txt, .csv"
+                id="fileInput"
+                key={key}
               />
             </div>
 
-            <Button
-              onClick={getChatData}
-              disabled={loading}
-              className="bg-purple-600 hover:bg-purple-700 text-white h-12 w-12 rounded-lg flex items-center justify-center rounded-full -rotate-90"
-            >
-              {loading ? (
-                <div className="h-6 w-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="m5 12 7 7 7-7" />
-                  <path d="m5 5 7 7 7-7" />
-                </svg>
-              )}
-            </Button>
+            {loading ? (
+              <Icon
+                icon="line-md:loading-loop"
+                width="40"
+                height="40"
+                color="#804C9E"
+              />
+            ) : (
+              <Button
+                onClick={() => handleFileUpload()}
+                disabled={loading}
+                className="bg-purple-600 hover:bg-purple-700 text-white h-12 w-12 rounded-lg flex items-center justify-center rounded-full"
+              >
+                ➤
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>

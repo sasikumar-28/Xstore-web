@@ -1,4 +1,5 @@
 export const getRoute = (role = "admin") => {
+  console.log(role);
   return [
     {
       name: "Xstore",
