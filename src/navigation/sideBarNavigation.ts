@@ -10,7 +10,7 @@ export const getRoute = (role = "admin") => {
           children: [
             {
               name: "Requirement Capture",
-              link: "/chats",
+              link: "/RequirementCapture",
             },
             {
               name: "Document Generation",
