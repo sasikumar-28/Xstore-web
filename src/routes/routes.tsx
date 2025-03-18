@@ -7,6 +7,7 @@ import Register from "@/pages/register";
 import Chats from "@/pages/chats";
 import Home from "@/pages/home";
 import Customchatbot from "@/pages/custom-chatbot";
+import RequirementCapture from "@/pages/RequirementCapture";
 
 const routes = createBrowserRouter([
   {
@@ -19,22 +20,26 @@ const routes = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
-      },
-      {
         path: "chats",
         element: <Chats />,
       },
       {
         path: "Customchatbot",
-        element: <Customchatbot/>
-      }
+        element: <Customchatbot />,
+      },
+      {
+        path: "RequirementCapture",
+        element: <RequirementCapture />,
+      },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "register",
+    element: <Register />,
   },
   {
     path: "*",

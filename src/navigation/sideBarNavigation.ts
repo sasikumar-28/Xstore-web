@@ -1,3 +1,25 @@
-export const route = (role = "admin") => {
-  return role;
+export const getRoute = (role = "admin") => {
+  console.log(role);
+  return [
+    {
+      name: "Xstore",
+      children: [
+        { name: "Functional Assistant", link: "/Customchatbot" },
+        {
+          name: "FRD Generation",
+          link: "",
+          children: [
+            {
+              name: "Requirement Capture",
+              link: "/RequirementCapture",
+            },
+            {
+              name: "Document Generation",
+              link: "/chats",
+            },
+          ],
+        },
+      ],
+    },
+  ];
 };
