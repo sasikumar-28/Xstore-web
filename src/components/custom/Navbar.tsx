@@ -1,11 +1,4 @@
 import { getRoute } from "@/navigation/sideBarNavigation";
-import {
-  Sheet,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  SheetContent,
-} from "../ui/sheet";
 import { Button } from "../ui/button";
 import { RouteParameter } from "@/type/route-type";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -26,29 +19,25 @@ const Navbar = () => {
 
   return (
     <>
-      <Sheet open={show} onOpenChange={setShow}>
-        <SheetTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-primary -rotate-90 bg-white rounded-full shadow-md m-2"
-            onClick={() => setShow(!show)}
-          >
-            <Icon icon="ooui:expand" width="20" height="20" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent className="mt-16 h-[calc(100vh-8rem)]">
-          <SheetHeader>
-            <SheetTitle className="text-2xl font-semibold tracking-wide flex justify-between">
-              <div>ASPIRE's AI</div>
-              <div
-                onClick={() => setShow(!show)}
-                className="rotate-90 cursor-pointer"
-              >
-                <Icon icon="ooui:expand" width="20" height="20" />
-              </div>
-            </SheetTitle>
-          </SheetHeader>
+      <div
+        className="relative transition-all duration-500 ease-in-out"
+        style={{ width: show ? "18rem" : "0" }}
+      >
+        <div
+          className={` h-screen w-72 bg-white p-6 shadow-lg transition-transform duration-700 ease-in-out ${
+            show ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="flex justify-between items-center text-2xl font-semibold tracking-wide">
+            <div>ASPIRE's AI</div>
+            <div
+              onClick={() => setShow(!show)}
+              className="rotate-90 cursor-pointer"
+            >
+              <Icon icon="ooui:expand" width="20" height="20" />
+            </div>
+          </div>
+
           <ScrollArea className="mt-4 h-[calc(100vh-100px)]">
             <Accordion type="multiple" className="space-y-4">
               {route.map((item, index) =>
@@ -58,10 +47,7 @@ const Navbar = () => {
                     value={`item-${index}`}
                     className="border-none"
                   >
-                    <AccordionTrigger
-                      className="text-lg font-medium text-primary flex justify-between focus:outline-none"
-                      style={{ border: "none" }}
-                    >
+                    <AccordionTrigger className="text-lg font-medium text-primary flex justify-between focus:outline-none">
                       {item?.link ? (
                         <div
                           onClick={() => navigate(String(item?.link))}
@@ -74,17 +60,14 @@ const Navbar = () => {
                       )}
                     </AccordionTrigger>
                     <AccordionContent className="ml-4 space-y-2">
-                      {item.children?.map((child, index) =>
+                      {item.children?.map((child, idx) =>
                         child.children ? (
                           <AccordionItem
-                            key={index}
-                            value={`child-${index}`}
+                            key={idx}
+                            value={`child-${idx}`}
                             style={{ borderBottom: "none" }}
                           >
-                            <AccordionTrigger
-                              className="text-sm text-muted-foreground flex justify-between"
-                              style={{ textDecoration: "none" }}
-                            >
+                            <AccordionTrigger className="text-sm text-muted-foreground flex justify-between">
                               {child.link ? (
                                 <div
                                   onClick={() => navigate(String(child?.link))}
@@ -122,7 +105,7 @@ const Navbar = () => {
                           </AccordionItem>
                         ) : (
                           <div
-                            key={index}
+                            key={idx}
                             className="cursor-pointer hover:underline text-sm text-muted-foreground flex justify-between"
                             onClick={() => navigate(String(child?.link))}
                             style={{ fontWeight: 500 }}
@@ -145,8 +128,23 @@ const Navbar = () => {
               )}
             </Accordion>
           </ScrollArea>
-        </SheetContent>
-      </Sheet>
+        </div>
+
+        {/* Toggle Button (Appears when sidebar is closed) */}
+      </div>
+      {!show && (
+        <div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-primary bg-white rounded-full shadow-md -rotate-90 mt-5 ml-2"
+            onClick={() => setShow(!show)}
+          >
+            <Icon icon="ooui:expand" width="20" height="20" />
+          </Button>
+        </div>
+      )}
+      {/* </Sheet> */}
     </>
   );
 };
