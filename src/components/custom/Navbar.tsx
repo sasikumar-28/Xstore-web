@@ -31,7 +31,7 @@ const Navbar = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="text-primary -rotate-90"
+            className="text-primary -rotate-90 bg-white rounded-full shadow-md m-2"
             onClick={() => setShow(!show)}
           >
             <Icon icon="ooui:expand" width="20" height="20" />
@@ -41,7 +41,10 @@ const Navbar = () => {
           <SheetHeader>
             <SheetTitle className="text-2xl font-semibold tracking-wide flex justify-between">
               <div>ASPIRE's AI</div>
-              <div onClick={() => setShow(!show)} className="rotate-90">
+              <div
+                onClick={() => setShow(!show)}
+                className="rotate-90 cursor-pointer"
+              >
                 <Icon icon="ooui:expand" width="20" height="20" />
               </div>
             </SheetTitle>
