@@ -14,6 +14,10 @@ export const getRoute = (role = "admin") => {
               link: "/RequirementCapture",
             },
             {
+              name: "Document Generation (Bedrock)",
+              link: "/DocumentGeneration",
+            },
+            {
               name: "Document Generation",
               link: "/chats",
             },

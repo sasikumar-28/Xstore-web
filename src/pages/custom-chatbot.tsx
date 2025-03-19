@@ -225,6 +225,12 @@ export default function Customchatbot() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask me anything"
           style={styles.inputField}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              getChatData();
+            }
+          }}
         />
         <div className="absolute right-0 top-1/2 transform -translate-y-1/2 pr-2">
           {loading ? (
