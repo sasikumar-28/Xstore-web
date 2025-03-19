@@ -7,8 +7,8 @@ import chatPageRobot from "@/assets/chat-page-image/bot-chat-logo.png";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
-import { getAccessToken } from "@/utils/getAccessToken";
 import { Paperclip } from "lucide-react";
+import { getDocumentGenerationBedRock } from "@/server/gen-ai";
 // import { useToast } from "@/hooks/use-toast";
 
 type FormValues = {
@@ -27,6 +27,7 @@ export default function DocumentGeneration() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [response, setResponse] = useState<string>("");
+  const [key, setKey] = useState(0);
   // const [error, setError] = useState<string | null>(null);
   // const { toast } = useToast()
 
@@ -37,6 +38,7 @@ export default function DocumentGeneration() {
   ];
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event, "file");
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
@@ -45,6 +47,7 @@ export default function DocumentGeneration() {
 
   const handleRemoveFile = () => {
     setSelectedFile(null); // Clear the selected file
+    setKey((p) => p + 1);
   };
 
   const onSubmit = async (data: FormValues) => {
@@ -55,34 +58,9 @@ export default function DocumentGeneration() {
     setResponse("");
 
     try {
-      const token = await getAccessToken();
-      const formData = new FormData();
-
-      if (selectedFile) {
-        const allowedTypes = [
-          "application/pdf",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ];
-        if (!allowedTypes.includes(selectedFile.type))
-          throw new Error("Only PDF and DOCX files are allowed");
-
-        formData.append("file", selectedFile);
-      }
-
-      const URL = import.meta.env.VITE_SERVER_BASE_URL;
-      // const URL = "http://localhost:5000";
-
-      // Step 1: Submit request and get jobId
-      const { data: jobResponse } = await axios.post(
-        `${URL}/api/bff/users/xstore-chatgpt`,
-        formData,
-        {
-          params: { userQuery: data.query },
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      const jobId = jobResponse.jobId;
+      const res = await getDocumentGenerationBedRock(selectedFile, data.query);
+      console.log(res);
+      const jobId = res.jobId;
       if (!jobId) throw new Error("Failed to get jobId");
 
       // Step 2: Poll for job completion
@@ -93,7 +71,9 @@ export default function DocumentGeneration() {
         await new Promise((resolve) => setTimeout(resolve, 8000)); // Poll every 5 seconds
 
         const { data: statusResponse } = await axios.get(
-          `${URL}/api/bff/users/xstore-chatgpt/status/${jobId}`
+          `${
+            import.meta.env.VITE_SERVER_BASE_URL
+          }/api/web-bff/chatStream/${jobId}`
         );
         status = statusResponse.status;
 
@@ -103,10 +83,12 @@ export default function DocumentGeneration() {
           throw new Error(statusResponse.error || "Job failed");
         }
       }
+      console.log(responseData, "response data");
 
-      setResponse(responseData.xstoreResponse);
+      setResponse(responseData.outputEvents["Event 1"].content);
       reset(); // Clear form only on success
       setSelectedFile(null);
+      setKey((p) => p + 1);
     } catch (error) {
       let errorMessage = "An unexpected error occurred";
       if (axios.isAxiosError(error)) {
@@ -154,7 +136,9 @@ export default function DocumentGeneration() {
                 type="file"
                 id="fileInput"
                 className="hidden"
+                accept=".txt, .csv"
                 onChange={onFileChange}
+                key={key}
               />
             </div>
             {/* <Button
