@@ -226,6 +226,12 @@ export default function RequirementCapture() {
                 accept=".txt, .csv"
                 id="fileInput"
                 key={key}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleFileUpload();
+                  }
+                }}
               />
             </div>
 
