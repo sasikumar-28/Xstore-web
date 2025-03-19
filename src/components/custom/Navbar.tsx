@@ -32,7 +32,9 @@ const Navbar = () => {
             <div>ASPIRE's AI</div>
             <div
               onClick={() => setShow(!show)}
-              className="rotate-90 cursor-pointer"
+              className={`cursor-pointer transition-transform duration-300 ${
+                show ? "rotate-90" : "rotate-180"
+              }`}
             >
               <Icon icon="ooui:expand" width="20" height="20" />
             </div>
