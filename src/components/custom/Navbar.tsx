@@ -50,8 +50,15 @@ const Navbar = () => {
             <Accordion type="multiple" className="space-y-4">
               {route.map((item, index) =>
                 item?.children ? (
-                  <AccordionItem key={index} value={`item-${index}`}>
-                    <AccordionTrigger className="text-lg font-medium text-primary flex justify-between">
+                  <AccordionItem
+                    key={index}
+                    value={`item-${index}`}
+                    className="border-none"
+                  >
+                    <AccordionTrigger
+                      className="text-lg font-medium text-primary flex justify-between focus:outline-none"
+                      style={{ border: "none" }}
+                    >
                       {item?.link ? (
                         <div
                           onClick={() => navigate(String(item?.link))}
