@@ -5,10 +5,11 @@ import botChatLogo from "@/assets/chat-page-image/bot-chat-logo.png";
 import sendButtonIcon from "@/assets/chat-page-image/send-button-icon.png";
 import chatPageRobot from "@/assets/chat-page-image/bot-chat-logo.png";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Paperclip } from "lucide-react";
 import { getDocumentGenerationBedRock } from "@/server/gen-ai";
+import { getAccessToken } from "@/utils/getAccessToken";
 // import { useToast } from "@/hooks/use-toast";
 
 type FormValues = {
@@ -28,7 +29,7 @@ export default function DocumentGeneration() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [response, setResponse] = useState<string>("");
   const [key, setKey] = useState(0);
-  // const [error, setError] = useState<string | null>(null);
+  const [jobId, setJobId] = useState<string | null>(null);
   // const { toast } = useToast()
 
   const suggestions = [
@@ -61,34 +62,8 @@ export default function DocumentGeneration() {
       const res = await getDocumentGenerationBedRock(selectedFile, data.query);
       console.log(res);
       const jobId = res.jobId;
-      if (!jobId) throw new Error("Failed to get jobId");
-
-      // Step 2: Poll for job completion
-      let status = "processing";
-      let responseData = null;
-
-      while (status === "processing") {
-        await new Promise((resolve) => setTimeout(resolve, 8000)); // Poll every 5 seconds
-
-        const { data: statusResponse } = await axios.get(
-          `${
-            import.meta.env.VITE_SERVER_BASE_URL
-          }/api/web-bff/chatStream/${jobId}`
-        );
-        status = statusResponse.status;
-
-        if (status === "completed") {
-          responseData = statusResponse.data;
-        } else if (status === "failed") {
-          throw new Error(statusResponse.error || "Job failed");
-        }
-      }
-      console.log(responseData, "response data");
-
-      setResponse(responseData.outputEvents["Event 1"].content);
-      reset(); // Clear form only on success
-      setSelectedFile(null);
-      setKey((p) => p + 1);
+      setJobId(jobId);
+      return;
     } catch (error) {
       let errorMessage = "An unexpected error occurred";
       if (axios.isAxiosError(error)) {
@@ -98,10 +73,55 @@ export default function DocumentGeneration() {
       }
       console.log("Error:", errorMessage);
       // setError(errorMessage);
-    } finally {
+    }
+  };
+
+  const fetchWithToken = async (url: string, options = {}) => {
+    const token = await getAccessToken();
+    if (!token) throw new Error("Failed to fetch token");
+    return fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        // ...(options.headers || {}),
+      },
+    }).then((res) => res.json());
+  };
+
+  const getStatus = async () => {
+    if (!jobId) return;
+
+    try {
+      const response = await fetchWithToken(
+        `${
+          import.meta.env.VITE_SERVER_BASE_URL
+        }/api/web-bff/chatStream/${jobId}`
+      );
+      console.log("first");
+      if (response.status === "completed") {
+        setResponse(response.data?.outputEvents?.["Event 1"]?.content);
+        reset(); // Clear form only on success
+        setSelectedFile(null);
+        setKey((p) => p + 1);
+        setJobId(null);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching chat status:", error);
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!jobId) return;
+
+    const interval = setInterval(() => {
+      getStatus();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [jobId]);
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return "0 Bytes";
