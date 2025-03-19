@@ -219,9 +219,9 @@ export default function DocumentGeneration() {
             <div className="absolute bottom-24 w-1/2 rounded-full drop-shadow-lg border bg-[#FFFFFF]">
               <div className="container mx-auto max-w-4xl px-5">
                 {selectedFile && (
-                  <div className="flex flex-wrap gap-2 mb-1 items-center px-7 py-1 w-6/12 rounded-full drop-shadow-lg">
+                  <div className="flex flex-wrap gap-2 mb-1 items-center px-7 py-1 w-10/12 rounded-full drop-shadow-lg">
                     <div className="flex flex-col">
-                      <span className="text-sm text-ellipsis truncate max-w-[200px]">
+                      <span className="text-sm text-ellipsis truncate max-w-[200px] truncate">
                         {selectedFile.name}
                       </span>
                       <span className="text-xs ">
