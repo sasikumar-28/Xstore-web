@@ -8,6 +8,7 @@ import Chats from "@/pages/chats";
 import Home from "@/pages/home";
 import Customchatbot from "@/pages/custom-chatbot";
 import RequirementCapture from "@/pages/RequirementCapture";
+import DocumentGeneration from "@/pages/DocumentGeneration";
 
 const routes = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const routes = createBrowserRouter([
       {
         path: "RequirementCapture",
         element: <RequirementCapture />,
+      },
+      {
+        path: "DocumentGeneration",
+        element: <DocumentGeneration />,
       },
     ],
   },
