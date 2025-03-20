@@ -41,15 +41,15 @@ const Navbar = () => {
           </div>
 
           <ScrollArea className="mt-4 h-[calc(100vh-100px)]">
-            <Accordion type="multiple" className="space-y-4">
+            <Accordion type="multiple" className="space-y-4 mt-4">
               {route.map((item, index) =>
                 item?.children ? (
                   <AccordionItem
                     key={index}
                     value={`item-${index}`}
-                    className="border-none"
+                    className="border-none mb-8"
                   >
-                    <AccordionTrigger className="text-lg font-medium text-primary flex justify-between focus:outline-none pb-none">
+                    <AccordionTrigger className="text-lg font-medium text-primary flex justify-between focus:outline-none -mt-3 pb-0">
                       {item?.link ? (
                         <div
                           onClick={() => navigate(String(item?.link))}
