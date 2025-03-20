@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getAccessToken } from "@/utils/getAccessToken";
 import { Icon } from "@iconify/react";
+import { useSearchParams } from "react-router";
 
 export const formatStringToHtml = (str: string) => {
   return str
@@ -23,6 +24,8 @@ export default function Customchatbot() {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [jobId, setJobId] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const param = searchParams.get("param");
 
   const fetchWithToken = async (url: string, options = {}) => {
     const token = await getAccessToken();
@@ -42,13 +45,17 @@ export default function Customchatbot() {
 
     setLoading(true);
     try {
+      const flowId =
+        param === "composable-commerce" ? "IS00QDXMCO" : "3VUX9NHM6Z";
+      const flowAliasId =
+        param === "composable-commerce" ? "A9BPVK1C3R" : "2PGRJZR3RB";
       const response = await fetchWithToken(
         `${import.meta.env.VITE_SERVER_BASE_URL}/api/web-bff/chatStream`,
         {
           method: "POST",
           body: JSON.stringify({
-            flowId: "3VUX9NHM6Z",
-            flowAliasId: "2PGRJZR3RB",
+            flowId,
+            flowAliasId,
             input: input.trim(),
           }),
         }
