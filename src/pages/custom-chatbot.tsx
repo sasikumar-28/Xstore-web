@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { getAccessToken } from "@/utils/getAccessToken";
 import { Icon } from "@iconify/react";
 
-const formatStringToHtml = (str: string) => {
+export const formatStringToHtml = (str: string) => {
   return str
     .split("\\n")
     .map((line, index) => {

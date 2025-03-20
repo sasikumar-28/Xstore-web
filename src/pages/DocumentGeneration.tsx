@@ -10,6 +10,7 @@ import axios from "axios";
 import { Paperclip } from "lucide-react";
 import { getDocumentGenerationBedRock } from "@/server/gen-ai";
 import { getAccessToken } from "@/utils/getAccessToken";
+import { formatStringToHtml } from "./custom-chatbot";
 // import { useToast } from "@/hooks/use-toast";
 
 type FormValues = {
@@ -101,6 +102,14 @@ export default function DocumentGeneration() {
       console.log("first");
       if (response.status === "completed") {
         setResponse(response.data?.outputEvents?.["Event 1"]?.content);
+        reset(); // Clear form only on success
+        setSelectedFile(null);
+        setKey((p) => p + 1);
+        setJobId(null);
+        setIsLoading(false);
+      }
+      if (response.status === "failed") {
+        setResponse("Error processing content");
         reset(); // Clear form only on success
         setSelectedFile(null);
         setKey((p) => p + 1);
@@ -206,8 +215,10 @@ export default function DocumentGeneration() {
           {response && (
             <div
               className="prose prose-sm max-w-none text-sm w-4/6 text-[#232323] bg-[#FFFFFF] drop-shadow-[0_3px_6px_#00000029] ml-20 mb-24 px-7 py-4 text-[12px] rounded-r-xl rounded-bl-2xl"
-              dangerouslySetInnerHTML={{ __html: response }}
-            />
+              dangerouslySetInnerHTML={{ __html: formatStringToHtml(response) }}
+            >
+              {/* {response} */}
+            </div>
           )}
 
           <form
