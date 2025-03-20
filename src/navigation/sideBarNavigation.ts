@@ -23,6 +23,22 @@ export const getRoute = (role = "admin") => {
             },
           ],
         },
+        {
+          name: "Digital Commerce",
+          link: "",
+          children: [
+            {
+              name: "Composable Commerce",
+              link: "",
+              children: [
+                {
+                  name: "Functional Assistant",
+                  link: "/RequirementCapture",
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
   ];

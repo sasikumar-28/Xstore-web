@@ -49,7 +49,7 @@ const Navbar = () => {
                     value={`item-${index}`}
                     className="border-none"
                   >
-                    <AccordionTrigger className="text-lg font-medium text-primary flex justify-between focus:outline-none">
+                    <AccordionTrigger className="text-lg font-medium text-primary flex justify-between focus:outline-none pb-none">
                       {item?.link ? (
                         <div
                           onClick={() => navigate(String(item?.link))}
@@ -82,33 +82,76 @@ const Navbar = () => {
                               )}
                             </AccordionTrigger>
                             <AccordionContent className="ml-6 space-y-1">
-                              {child.children?.map((subChild, e) => (
-                                <div
-                                  key={e}
-                                  className="text-xs text-muted-foreground hover:text-primary transition"
-                                >
-                                  {subChild.link ? (
-                                    <div
-                                      className="cursor-pointer hover:underline"
-                                      onClick={() =>
-                                        navigate(String(subChild?.link))
-                                      }
-                                    >
-                                      {subChild.name}
-                                    </div>
-                                  ) : (
-                                    <div className="text-sm font-medium">
-                                      {subChild.name}
-                                    </div>
-                                  )}
-                                </div>
-                              ))}
+                              {child.children?.map((subChild, e) =>
+                                subChild.children ? (
+                                  <AccordionItem
+                                    key={e}
+                                    value={`subChild-${e}`}
+                                  >
+                                    <AccordionTrigger className="text-sm text-muted-foreground flex justify-between font-normal">
+                                      {subChild.link ? (
+                                        <div
+                                          className="cursor-pointer hover:underline"
+                                          onClick={() =>
+                                            navigate(String(subChild?.link))
+                                          }
+                                        >
+                                          {subChild.name}
+                                        </div>
+                                      ) : (
+                                        <div className="">{subChild.name}</div>
+                                      )}
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                      {subChild.children?.map(
+                                        (subSubChild, i) => (
+                                          <div key={i} className="ml-6">
+                                            {subSubChild.link ? (
+                                              <div
+                                                className="cursor-pointer hover:underline text-sm text-muted-foreground flex justify-between pb-2"
+                                                onClick={() =>
+                                                  navigate(
+                                                    String(subSubChild?.link)
+                                                  )
+                                                }
+                                              >
+                                                {subSubChild.name}
+                                              </div>
+                                            ) : (
+                                              <div className="text-sm font-medium pb-2 text-muted-foreground text-sm">
+                                                {subSubChild.name}
+                                              </div>
+                                            )}
+                                          </div>
+                                        )
+                                      )}
+                                    </AccordionContent>
+                                  </AccordionItem>
+                                ) : (
+                                  <div key={e}>
+                                    {subChild.link ? (
+                                      <div
+                                        className="cursor-pointer hover:underline"
+                                        onClick={() =>
+                                          navigate(String(subChild?.link))
+                                        }
+                                      >
+                                        {subChild.name}
+                                      </div>
+                                    ) : (
+                                      <div className="text-sm font-medium">
+                                        {subChild.name}
+                                      </div>
+                                    )}
+                                  </div>
+                                )
+                              )}
                             </AccordionContent>
                           </AccordionItem>
                         ) : (
                           <div
                             key={idx}
-                            className="cursor-pointer hover:underline text-sm text-muted-foreground flex justify-between"
+                            className="cursor-pointer hover:underline text-sm text-muted-foreground flex justify-between pb-2"
                             onClick={() => navigate(String(child?.link))}
                             style={{ fontWeight: 500 }}
                           >
@@ -121,7 +164,7 @@ const Navbar = () => {
                 ) : (
                   <div
                     key={index}
-                    className="cursor-pointer"
+                    className="cursor-pointer p-2"
                     onClick={() => navigate(String(item?.link))}
                   >
                     {item.name}
