@@ -40,6 +40,12 @@ export default function Customchatbot() {
     }).then((res) => res.json());
   };
 
+  const suggestions = [
+    "What is Auras?",
+    "What is Composable Commerce?",
+    "How To migrate to Composable Commerce?",
+  ];
+
   const getChatData = async () => {
     if (!input.trim()) return;
 
@@ -256,6 +262,18 @@ export default function Customchatbot() {
               ➤
             </button>
           )}
+        </div>
+        <div className="flex flex-wrap absolute gap-2 mt-2">
+          {param === "composable-commerce" &&
+            suggestions.map((s, i) => (
+              <div
+                key={i}
+                className="p-2 rounded-full text-sm ring-2 ring-[#804C9E] bg-[#804C9E0D] cursor-pointer"
+                onClick={() => setInput(s)}
+              >
+                {s}
+              </div>
+            ))}
         </div>
       </div>
     </div>
