@@ -54,7 +54,7 @@ export default function DocumentGeneration() {
     register,
     handleSubmit,
     watch,
-    setValue,
+    // setValue,
     reset,
     formState: { errors },
   } = useForm<FormValues>();
@@ -64,12 +64,6 @@ export default function DocumentGeneration() {
   const [key, setKey] = useState(0);
   const [jobId, setJobId] = useState<string | null>(null);
   // const { toast } = useToast()
-
-  const suggestions = [
-    "Create a Functional Requirement Document for the attached Transcript",
-    "Generate a Test Case Document for Customer Registration use case in an ECommerce website",
-    "Generate Test Data for Registered Customers of an ECommerce Website",
-  ];
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log(event, "file");
