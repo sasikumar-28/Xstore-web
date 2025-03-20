@@ -35,7 +35,7 @@ export const getRoute = (role = "admin") => {
           children: [
             {
               name: "Functional Assistant",
-              link: "/Customchatbot",
+              link: "/Customchatbot?param=composable-commerce",
             },
           ],
         },
