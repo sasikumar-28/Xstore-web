@@ -10,8 +10,40 @@ import axios from "axios";
 import { Paperclip } from "lucide-react";
 import { getDocumentGenerationBedRock } from "@/server/gen-ai";
 import { getAccessToken } from "@/utils/getAccessToken";
-import { formatStringToHtml } from "./custom-chatbot";
-// import { useToast } from "@/hooks/use-toast";
+
+const formatStringToHtml = (str: string) => {
+  return str
+    .split("\n")
+    .map((line, index) => {
+      // Handle numbered points with decimals (e.g., 1.1, 2.3)
+      const numberedPointWithDecimal = line.match(/^(\d+\.\d+)\s(.+)/);
+      if (numberedPointWithDecimal) {
+        return `<p key=${index} class="mb-2 ml-6"><strong>${numberedPointWithDecimal[1]}</strong> ${numberedPointWithDecimal[2]}</p>`;
+      }
+
+      // Handle regular numbered points (e.g., 1., 2.)
+      const numberedPoint = line.match(/^(\d+)\.\s(.+)/);
+      if (numberedPoint) {
+        return `<p key=${index} class="mb-2"><strong>${numberedPoint[1]}.</strong> ${numberedPoint[2]}</p>`;
+      }
+
+      // Handle bullet points
+      if (line.trim().startsWith("-")) {
+        return `<p key=${index} class="mb-2 ml-6">• ${line
+          .trim()
+          .substring(1)}</p>`;
+      }
+
+      // Handle headers (lines without numbers or bullets but with content)
+      if (line.trim() && !line.trim().startsWith("-") && !line.match(/^\d/)) {
+        return `<p key=${index} class="mb-4 font-semibold">${line}</p>`;
+      }
+
+      // Handle empty lines
+      return line.trim() ? `<p key=${index} class="mb-2">${line}</p>` : "<br/>";
+    })
+    .join("");
+};
 
 type FormValues = {
   query: string;
@@ -28,7 +60,7 @@ export default function DocumentGeneration() {
   } = useForm<FormValues>();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [response, setResponse] = useState<string>("");
+  const [response, setResponse] = useState<string>(``);
   const [key, setKey] = useState(0);
   const [jobId, setJobId] = useState<string | null>(null);
   // const { toast } = useToast()
@@ -53,6 +85,7 @@ export default function DocumentGeneration() {
   };
 
   const onSubmit = async (data: FormValues) => {
+    if (!selectedFile || !data.query) return;
     if (isLoading) return;
 
     setIsLoading(true);
@@ -99,7 +132,6 @@ export default function DocumentGeneration() {
           import.meta.env.VITE_SERVER_BASE_URL
         }/api/web-bff/chatStream/${jobId}`
       );
-      console.log("first");
       if (response.status === "completed") {
         setResponse(response.data?.outputEvents?.["Event 1"]?.content);
         reset(); // Clear form only on success
@@ -158,7 +190,8 @@ export default function DocumentGeneration() {
                 />
               </div>
               <p className="text-[#232323] bg-[#FFFFFF] drop-shadow-[0_3px_6px_#00000029] px-7 py-3 text-sm rounded-r-xl rounded-bl-2xl">
-                How may I help you?
+                Enter your requirements and attach the transcript to generate
+                the document
               </p>
               <input
                 name="file"
@@ -179,7 +212,7 @@ export default function DocumentGeneration() {
           </div>
 
           {/* Suggestion Chips */}
-          <div className="flex flex-col gap-3 mb-8 pl-20">
+          {/* <div className="flex flex-col gap-3 mb-8 pl-20">
             {suggestions.map((suggestion, index) => (
               <Button
                 key={index}
@@ -190,7 +223,7 @@ export default function DocumentGeneration() {
                 {suggestion}
               </Button>
             ))}
-          </div>
+          </div> */}
 
           {isLoading && (
             <div className="ml-20 animate-spin rounded-full h-6 w-6 border-b-2 border-purple-700" />
@@ -215,10 +248,10 @@ export default function DocumentGeneration() {
           {response && (
             <div
               className="prose prose-sm max-w-none text-sm w-4/6 text-[#232323] bg-[#FFFFFF] drop-shadow-[0_3px_6px_#00000029] ml-20 mb-24 px-7 py-4 text-[12px] rounded-r-xl rounded-bl-2xl"
-              dangerouslySetInnerHTML={{ __html: formatStringToHtml(response) }}
-            >
-              {/* {response} */}
-            </div>
+              dangerouslySetInnerHTML={{
+                __html: formatStringToHtml(response.replace(/\\n/g, "\n")),
+              }}
+            />
           )}
 
           <form
