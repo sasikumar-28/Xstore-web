@@ -8,6 +8,8 @@ import axios from "axios";
 import regisernow from "@/assets/registernnow.png";
 import { useNavigate } from "react-router";
 import { getAccessToken } from "@/utils/getAccessToken";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 type FormValues = {
   email: string;
@@ -83,6 +85,8 @@ export default function Register() {
   };
 
   return (
+    <>
+    <Header/>
     <div className="bg-[#FAFAFA] pl-24 flex flex-col md:flex-row items-center justify-between">
       {/* Form Section */}
       <div className="w-full max-w-96">
@@ -188,5 +192,7 @@ export default function Register() {
         />
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }
