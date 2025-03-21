@@ -10,6 +10,8 @@ import submitButtonIcon from "@/assets/login-page-image/submit-icon.png";
 import leftQuote from "@/assets/login-page-image/quote-left.png";
 import rightQuote from "@/assets/login-page-image/quote-right.png";
 import { getAccessToken } from "@/utils/getAccessToken";
+import Footer from "@/components/footer";
+import Header from "@/components/header";
 
 interface FormValues {
   email: string;
@@ -77,6 +79,8 @@ export default function Login() {
   };
 
   return (
+    <>
+    <Header/>
     <div className="container w-full flex py-12 md:flex-row items-center justify-around z-10">
       {/* Left Column */}
       <div className="absolute top-24 left-24">
@@ -187,5 +191,7 @@ export default function Login() {
         <img src={rightQuote} alt="" width={100} className="" />
       </div>
     </div>
-  );
+    <Footer/>
+    </>
+  );  
 }
