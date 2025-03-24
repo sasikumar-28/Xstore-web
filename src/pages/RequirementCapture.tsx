@@ -129,7 +129,6 @@ export default function RequirementCapture() {
         }}
         className="flex h-5/6 w-5/6"
       >
-        {/* Logo */}
         <div style={styles.logoContainer}>
           <img
             src="/logo1.webp"
