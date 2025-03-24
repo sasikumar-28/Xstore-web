@@ -3,7 +3,7 @@ import { getAccessToken } from "@/utils/getAccessToken";
 import { Icon } from "@iconify/react";
 import { useSearchParams } from "react-router";
 
-export const formatStringToHtml = (str: string) => {
+const formatStringToHtml = (str: string) => {
   return str
     .split("\\n")
     .map((line, index) => {
@@ -130,150 +130,150 @@ export default function Customchatbot() {
   }, [chatHistory]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: chatHistory.length > 0 ? "space-between" : "center",
-        width: "100vw",
-        // minHeight: "80vh",
-        height: "65%",
-      }}
-    >
-      {/* Logo */}
-      <div style={styles.logoContainer}>
-        <img
-          src="/logo1.webp"
-          alt="Aspire Logo"
-          width={60}
-          height={16}
-          style={styles.logo}
-        />
-      </div>
-
-      {/* Chat History */}
-      {chatHistory.length > 0 && (
-        <div
-          ref={chatContainerRef}
-          style={{
-            width: "100%",
-            maxWidth: "600px",
-            overflowY: "auto",
-            marginBottom: "20px",
-            height: "100%",
-            msOverflowY: "scroll",
-            scrollBehavior: "smooth",
-            padding: "20px",
-          }}
-        >
-          {chatHistory.map((chat, index) => (
-            <div key={index}>
-              {chat.query && (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    marginTop: "15px",
-                  }}
-                >
-                  <p
-                    style={{
-                      fontSize: "14px",
-                      color: "white",
-                      backgroundColor: "#804C9E",
-                      borderRadius: "15px 15px 0px 15px",
-                      padding: "12px",
-                      margin: "10px 0",
-                      maxWidth: "75%",
-                    }}
-                  >
-                    {chat.query}
-                  </p>
-                </div>
-              )}
-              {chat.response && (
-                <div style={{ marginTop: "10px" }}>
-                  <div
-                    style={{
-                      fontSize: "14px",
-                      color: "#232323",
-                      backgroundColor: "white",
-                      padding: "15px",
-                      borderRadius: "15px 15px 15px 0px",
-                      width: "100%",
-                      lineHeight: "1.5",
-                      whiteSpace: "pre-wrap",
-                      wordBreak: "break-word",
-                    }}
-                    dangerouslySetInnerHTML={{
-                      __html: formatStringToHtml(chat?.response),
-                    }}
-                  >
-                    {/* {chat.response} */}
-                  </div>
-                  <div className="w-full h-[1px] mt-2 bg-slate-300"></div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Input field */}
-      {chatHistory.length === 0 && (
-        <h1 style={styles.heading}>What can I help you with?</h1>
-      )}
+    <div className="flex justify-center w-full">
       <div
         style={{
-          position: "relative",
-          width: "100%",
-          maxWidth: "600px",
-          marginBottom: "5px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: chatHistory.length > 0 ? "space-between" : "center",
+          // minHeight: "80vh",
         }}
+        className="flex h-5/6 w-5/6"
       >
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask me anything"
-          style={styles.inputField}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              getChatData();
-            }
-          }}
-        />
-        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 pr-2">
-          {loading ? (
-            <Icon
-              icon="line-md:loading-loop"
-              width="40"
-              height="40"
-              color="#804C9E"
-            />
-          ) : (
-            <button
-              onClick={getChatData}
-              style={styles.submitButton}
-              disabled={loading}
-            >
-              ➤
-            </button>
-          )}
+        {/* Logo */}
+        <div style={styles.logoContainer}>
+          <img
+            src="/logo1.webp"
+            alt="Aspire Logo"
+            width={60}
+            height={16}
+            style={styles.logo}
+          />
         </div>
-        <div className="flex flex-wrap absolute gap-2 mt-2">
-          {param === "composable-commerce" &&
-            suggestions.map((s, i) => (
-              <div
-                key={i}
-                className="p-2 rounded-full text-sm ring-2 ring-[#804C9E] bg-[#804C9E0D] cursor-pointer"
-                onClick={() => setInput(s)}
-              >
-                {s}
+
+        {/* Chat History */}
+        {chatHistory.length > 0 && (
+          <div
+            ref={chatContainerRef}
+            style={{
+              width: "100%",
+              overflowY: "auto",
+              marginBottom: "20px",
+              height: "100%",
+              msOverflowY: "scroll",
+              scrollBehavior: "smooth",
+              padding: "20px",
+            }}
+          >
+            {chatHistory.map((chat, index) => (
+              <div key={index}>
+                {chat.query && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: "15px",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: "14px",
+                        color: "white",
+                        backgroundColor: "#804C9E",
+                        borderRadius: "15px 15px 0px 15px",
+                        padding: "12px",
+                        margin: "10px 0",
+                        maxWidth: "75%",
+                      }}
+                    >
+                      {chat.query}
+                    </p>
+                  </div>
+                )}
+                {chat.response && (
+                  <div style={{ marginTop: "10px" }}>
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        color: "#232323",
+                        backgroundColor: "white",
+                        padding: "15px",
+                        borderRadius: "15px 15px 15px 0px",
+                        width: "100%",
+                        lineHeight: "1.5",
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-word",
+                      }}
+                      dangerouslySetInnerHTML={{
+                        __html: formatStringToHtml(chat?.response),
+                      }}
+                    >
+                      {/* {chat.response} */}
+                    </div>
+                    <div className="w-full h-[1px] mt-2 bg-slate-300"></div>
+                  </div>
+                )}
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Input field */}
+        {chatHistory.length === 0 && (
+          <h1 style={styles.heading}>What can I help you with?</h1>
+        )}
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            marginBottom: "5px",
+          }}
+          className="max-w-[700px]"
+        >
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask me anything"
+            style={styles.inputField}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                getChatData();
+              }
+            }}
+          />
+          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 pr-2">
+            {loading ? (
+              <Icon
+                icon="line-md:loading-loop"
+                width="40"
+                height="40"
+                color="#804C9E"
+              />
+            ) : (
+              <button
+                onClick={getChatData}
+                style={styles.submitButton}
+                disabled={loading}
+              >
+                ➤
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap absolute gap-2 mt-2">
+            {param === "composable-commerce" &&
+              suggestions.map((s, i) => (
+                <div
+                  key={i}
+                  className="p-2 rounded-full text-sm ring-2 ring-[#804C9E] bg-[#804C9E0D] cursor-pointer"
+                  onClick={() => setInput(s)}
+                >
+                  {s}
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     </div>
