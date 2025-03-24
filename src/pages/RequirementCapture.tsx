@@ -129,15 +129,17 @@ export default function RequirementCapture() {
         }}
         className="flex h-5/6 w-5/6"
       >
-        <div style={styles.logoContainer}>
-          <img
-            src="/logo1.webp"
-            alt="Aspire Logo"
-            width={60}
-            height={16}
-            style={styles.logo}
-          />
-        </div>
+        {chatHistory.length == 0 && (
+          <div style={styles.logoContainer}>
+            <img
+              src="/logo1.webp"
+              alt="Aspire Logo"
+              width={60}
+              height={16}
+              style={styles.logo}
+            />
+          </div>
+        )}
 
         {/* Chat History */}
         {chatHistory.length > 0 && (
@@ -153,6 +155,15 @@ export default function RequirementCapture() {
               padding: "20px",
             }}
           >
+            <div style={styles.logoContainer}>
+              <img
+                src="/logo1.webp"
+                alt="Aspire Logo"
+                width={60}
+                height={16}
+                style={styles.logo}
+              />
+            </div>
             {chatHistory.map((chat, index) => (
               <div key={index}>
                 {chat.query && (
