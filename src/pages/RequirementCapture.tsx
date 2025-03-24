@@ -119,141 +119,140 @@ export default function RequirementCapture() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: chatHistory.length > 0 ? "space-between" : "center",
-        width: "100vw",
-        // minHeight: "80vh",
-        height: "70%",
-      }}
-    >
-      {/* Logo */}
-      <div style={styles.logoContainer}>
-        <img
-          src="/logo1.webp"
-          alt="Aspire Logo"
-          width={60}
-          height={16}
-          style={styles.logo}
-        />
-      </div>
+    <div className="flex justify-center w-full">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: chatHistory.length > 0 ? "space-between" : "center",
+        }}
+        className="flex h-5/6 w-5/6"
+      >
+        {/* Logo */}
+        <div style={styles.logoContainer}>
+          <img
+            src="/logo1.webp"
+            alt="Aspire Logo"
+            width={60}
+            height={16}
+            style={styles.logo}
+          />
+        </div>
 
-      {/* Chat History */}
-      {chatHistory.length > 0 && (
-        <div
-          ref={chatContainerRef}
-          style={{
-            width: "100%",
-            maxWidth: "600px",
-            overflowY: "auto",
-            marginBottom: "20px",
-            height: "100%",
-            msOverflowY: "scroll",
-            scrollBehavior: "smooth",
-            padding: "20px",
-          }}
-        >
-          {chatHistory.map((chat, index) => (
-            <div key={index}>
-              {chat.query && (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    marginTop: "15px",
-                  }}
-                >
-                  <p
-                    style={{
-                      fontSize: "14px",
-                      color: "white",
-                      backgroundColor: "#804C9E",
-                      borderRadius: "15px 15px 0px 15px",
-                      padding: "12px",
-                      margin: "10px 0",
-                      maxWidth: "75%",
-                    }}
-                  >
-                    {chat.query}
-                  </p>
-                </div>
-              )}
-              {chat.response && (
-                <div style={{ marginTop: "10px" }}>
+        {/* Chat History */}
+        {chatHistory.length > 0 && (
+          <div
+            ref={chatContainerRef}
+            style={{
+              width: "100%",
+              overflowY: "auto",
+              marginBottom: "20px",
+              height: "100%",
+              msOverflowY: "scroll",
+              scrollBehavior: "smooth",
+              padding: "20px",
+            }}
+          >
+            {chatHistory.map((chat, index) => (
+              <div key={index}>
+                {chat.query && (
                   <div
                     style={{
-                      fontSize: "14px",
-                      color: "#232323",
-                      backgroundColor: "white",
-                      padding: "15px",
-                      borderRadius: "15px 15px 15px 0px",
-                      width: "100%",
-                      lineHeight: "1.5",
-                      whiteSpace: "pre-wrap",
-                      wordBreak: "break-word",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: "15px",
                     }}
-                    // dangerouslySetInnerHTML={{
-                    //   __html: formatStringToHtml(chat?.response),
-                    // }}
                   >
-                    {chat.response}
+                    <p
+                      style={{
+                        fontSize: "14px",
+                        color: "white",
+                        backgroundColor: "#804C9E",
+                        borderRadius: "15px 15px 0px 15px",
+                        padding: "12px",
+                        margin: "10px 0",
+                        maxWidth: "75%",
+                      }}
+                    >
+                      {chat.query}
+                    </p>
                   </div>
-                  <div className="w-full h-[1px] mt-2 bg-slate-300"></div>
-                </div>
+                )}
+                {chat.response && (
+                  <div style={{ marginTop: "10px" }}>
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        color: "#232323",
+                        backgroundColor: "white",
+                        padding: "15px",
+                        borderRadius: "15px 15px 15px 0px",
+                        width: "100%",
+                        lineHeight: "1.5",
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-word",
+                      }}
+                      // dangerouslySetInnerHTML={{
+                      //   __html: formatStringToHtml(chat?.response),
+                      // }}
+                    >
+                      {chat.response}
+                    </div>
+                    <div className="w-full h-[1px] mt-2 bg-slate-300"></div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Input field */}
+        {chatHistory.length === 0 && (
+          <h1 style={styles.heading}>What can I help you with?</h1>
+        )}
+        <Card className="w-[700px] mx-auto shadow-md rounded-full">
+          <CardContent className="p-4">
+            <div className="relative flex items-center w-full gap-2">
+              <div className="relative w-full">
+                <Input
+                  type="file"
+                  onChange={(e) => handleFileChange(e)}
+                  placeholder="Ask me anything"
+                  className="pr-10  focus:border-purple-500 h-12 rounded-lg w-full rounded-full"
+                  style={{ border: "1px dashed gray" }}
+                  accept=".txt, .csv"
+                  id="fileInput"
+                  key={key}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleFileUpload();
+                    }
+                  }}
+                />
+              </div>
+
+              {loading ? (
+                <Icon
+                  icon="line-md:loading-loop"
+                  width="40"
+                  height="40"
+                  color="#804C9E"
+                />
+              ) : (
+                <Button
+                  onClick={() => handleFileUpload()}
+                  disabled={loading}
+                  className="bg-purple-600 hover:bg-purple-700 text-white h-12 w-12 rounded-lg flex items-center justify-center rounded-full"
+                >
+                  ➤
+                </Button>
               )}
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* Input field */}
-      {chatHistory.length === 0 && (
-        <h1 style={styles.heading}>What can I help you with?</h1>
-      )}
-      <Card className="w-full max-w-md mx-auto shadow-md rounded-full">
-        <CardContent className="p-4">
-          <div className="relative flex items-center w-full gap-2">
-            <div className="relative w-full">
-              <Input
-                type="file"
-                onChange={(e) => handleFileChange(e)}
-                placeholder="Ask me anything"
-                className="pr-10  focus:border-purple-500 h-12 rounded-lg w-full rounded-full"
-                style={{ border: "1px dashed gray" }}
-                accept=".txt, .csv"
-                id="fileInput"
-                key={key}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleFileUpload();
-                  }
-                }}
-              />
-            </div>
-
-            {loading ? (
-              <Icon
-                icon="line-md:loading-loop"
-                width="40"
-                height="40"
-                color="#804C9E"
-              />
-            ) : (
-              <Button
-                onClick={() => handleFileUpload()}
-                disabled={loading}
-                className="bg-purple-600 hover:bg-purple-700 text-white h-12 w-12 rounded-lg flex items-center justify-center rounded-full"
-              >
-                ➤
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

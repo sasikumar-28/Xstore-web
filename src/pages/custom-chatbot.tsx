@@ -46,6 +46,13 @@ export default function Customchatbot() {
     "How To migrate to Composable Commerce?",
   ];
 
+  useEffect(() => {
+    setChatHistory([]);
+    setInput("");
+    setJobId(null);
+    setLoading(false);
+  }, [param]);
+
   const getChatData = async () => {
     if (!input.trim()) return;
 
