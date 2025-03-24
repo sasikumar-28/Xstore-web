@@ -132,10 +132,10 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)]">
+    <div className="flex flex-col h-[calc(100vh-8rem)] w-full">
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-6xl mx-auto p-4">
-          <div className="flex items-center justify-between mb-4">
+        <div className="max-w-6xl flex flex-col items-center mx-auto p-4">
+          <div className="flex items-center w-full justify-between mb-4">
             <div className="flex items-center gap-4">
               <div className="flex items-center justify-center">
                 <img
@@ -154,19 +154,14 @@ export default function ChatInterface() {
                 type="file"
                 id="fileInput"
                 className="hidden"
+                accept=".docs, .pdf"
                 onChange={onFileChange}
               />
             </div>
-            {/* <Button
-            variant="outline"
-            className="w-fit rounded-full text-sm ring-1 ring-[#804C9E] bg-[#804C9E0D]"
-          >
-            Customize GPT
-          </Button> */}
           </div>
 
           {/* Suggestion Chips */}
-          <div className="flex flex-col gap-3 mb-8 pl-20">
+          <div className="flex flex-col w-full gap-3 mb-8 pl-20">
             {suggestions.map((suggestion, index) => (
               <Button
                 key={index}
@@ -183,25 +178,9 @@ export default function ChatInterface() {
             <div className="ml-20 animate-spin rounded-full h-6 w-6 border-b-2 border-purple-700" />
           )}
 
-          {/* {error && (
-            <div className="text-red-500 mb-4 pl-20 flex items-center gap-2 animate-fade-in">
-              ⚠️ {error}
-              <button
-                onClick={() => setError(null)}
-                className="text-gray-500 hover:text-gray-700 ml-2"
-              >
-                ×
-              </button>
-            </div>
-
-            toast({
-              description: error,
-            })
-          )} */}
-
           {response && (
             <div
-              className="prose prose-sm max-w-none text-sm w-4/6 text-[#232323] bg-[#FFFFFF] drop-shadow-[0_3px_6px_#00000029] ml-20 mb-24 px-7 py-4 text-[12px] rounded-r-xl rounded-bl-2xl"
+              className="prose w-full prose-sm max-w-none text-sm text-[#232323] bg-[#FFFFFF] drop-shadow-[0_3px_6px_#00000029] ml-20 mb-24 px-7 py-4 text-[12px] rounded-r-xl rounded-bl-2xl"
               dangerouslySetInnerHTML={{ __html: response }}
             />
           )}
@@ -209,10 +188,10 @@ export default function ChatInterface() {
           <form
             onSubmit={handleSubmit(onSubmit)}
             encType="multipart/form-data"
-            className="flex flex-col"
+            className="flex flex-col items-center"
           >
             {/* Chat Input */}
-            <div className="absolute bottom-24 w-1/2 rounded-full drop-shadow-lg border bg-[#FFFFFF]">
+            <div className="absolute bottom-8 w-1/2 rounded-full drop-shadow-lg border bg-[#FFFFFF]">
               <div className="container mx-auto max-w-4xl px-5">
                 {selectedFile && (
                   <div className="flex flex-wrap gap-2 mb-1 items-center px-7 py-1 w-6/12 rounded-full drop-shadow-lg">
