@@ -1,5 +1,4 @@
 import Navbar from "@/components/custom/Navbar";
-import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { Outlet } from "react-router";
 
@@ -11,7 +10,7 @@ const AppLayout = () => {
         <Navbar />
         <Outlet />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
