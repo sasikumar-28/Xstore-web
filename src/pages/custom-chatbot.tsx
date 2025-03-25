@@ -4,7 +4,6 @@ import { Icon } from "@iconify/react";
 import { useSearchParams } from "react-router";
 
 const formatStringToHtml = (str: string) => {
-  console.log(str, "the sting");
   return str.split("\\n").map((line, index) => {
     const numberedPoint = line.match(/^(\d+)\.\s(.+)/);
     if (numberedPoint) {
