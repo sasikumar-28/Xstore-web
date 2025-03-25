@@ -4,16 +4,24 @@ import { Icon } from "@iconify/react";
 import { useSearchParams } from "react-router";
 
 const formatStringToHtml = (str: string) => {
-  return str
-    .split("\\n")
-    .map((line, index) => {
-      const numberedPoint = line.match(/^(\d+)\.\s(.+)/);
-      if (numberedPoint) {
-        return `<p key=${index} class="mb-2"><strong>${numberedPoint[1]}.</strong> ${numberedPoint[2]}</p>`;
-      }
-      return line.trim() ? `<p key=${index} class="mb-2">${line}</p>` : "<br/>";
-    })
-    .join("");
+  return str.split("\\n").map((line, index) => {
+    const numberedPoint = line.match(/^(\d+)\.\s(.+)/);
+    if (numberedPoint) {
+      return (
+        <p key={index} className="mb-2">
+          <strong>{numberedPoint[1]}.</strong> {numberedPoint[2]}
+        </p>
+      );
+    }
+    return line.trim() ? (
+      <p key={index} className="mb-2">
+        {line}
+      </p>
+    ) : (
+      <br />
+    );
+  });
+  // .join("");
 };
 
 export default function Customchatbot() {
@@ -98,6 +106,10 @@ export default function Customchatbot() {
       );
 
       if (response.status === "completed") {
+        console.log(
+          formatStringToHtml(response.data?.outputEvents?.["Event 1"]?.content),
+          "the job id"
+        );
         setChatHistory((prev) =>
           prev.map((chat, index) =>
             index === prev.length - 1
@@ -223,11 +235,11 @@ export default function Customchatbot() {
                         whiteSpace: "pre-wrap",
                         wordBreak: "break-word",
                       }}
-                      dangerouslySetInnerHTML={{
-                        __html: formatStringToHtml(chat?.response),
-                      }}
+                      // dangerouslySetInnerHTML={{
+                      // __html: formatStringToHtml(chat?.response),
+                      // }}
                     >
-                      {/* {chat.response} */}
+                      {formatStringToHtml(chat.response)}
                     </div>
                     <div className="w-full h-[1px] mt-2 bg-slate-300"></div>
                   </div>
