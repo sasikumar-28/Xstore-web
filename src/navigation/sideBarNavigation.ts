@@ -17,10 +17,10 @@ export const getRoute = (role = "admin") => {
               name: "Document Generation (Bedrock)",
               link: "/DocumentGeneration",
             },
-            {
-              name: "Document Generation",
-              link: "/chats",
-            },
+            // {
+            //   name: "Document Generation",
+            //   link: "/chats",
+            // },
           ],
         },
       ],
