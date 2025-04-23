@@ -118,8 +118,8 @@ export default function RequirementCapture() {
     if (!input) return;
     if (!isEmailSelected) {
       toast({
-        title: "Email Required",
-        description: "Please select an email before submitting",
+        title: "Name Required",
+        description: "Please select a name before submitting",
         variant: "destructive",
       });
       return;
@@ -289,9 +289,13 @@ export default function RequirementCapture() {
                 <Button
                   onClick={() => handleFileUpload()}
                   disabled={loading || !isEmailSelected}
-                  className="bg-purple-600 hover:bg-purple-700 text-white h-12 w-12 rounded-full flex items-center justify-center"
+                  className={`h-12 w-12 rounded-full flex items-center justify-center transition-all duration-200 ${
+                    loading || !isEmailSelected
+                      ? "bg-gray-400 opacity-60 cursor-not-allowed"
+                      : "bg-purple-600 hover:bg-purple-700 text-white"
+                  }`}
                   title={
-                    !isEmailSelected ? "Please select an email first" : "Submit"
+                    !isEmailSelected ? "Please select a name first" : "Submit"
                   }
                 >
                   ➤

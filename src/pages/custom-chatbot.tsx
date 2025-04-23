@@ -75,8 +75,8 @@ export default function Customchatbot() {
     if (!input.trim()) return;
     if (!isEmailSelected) {
       toast({
-        title: "Email Required",
-        description: "Please select an email before submitting",
+        title: "Name Required",
+        description: "Please select a name before submitting",
         variant: "destructive",
       });
       return;
@@ -310,11 +310,16 @@ export default function Customchatbot() {
             ) : (
               <button
                 onClick={getChatData}
-                style={styles.submitButton}
+                style={{
+                  ...styles.submitButton,
+                  backgroundColor:
+                    loading || !isEmailSelected ? "#cccccc" : "purple",
+                  cursor:
+                    loading || !isEmailSelected ? "not-allowed" : "pointer",
+                  opacity: loading || !isEmailSelected ? 0.6 : 1,
+                }}
                 disabled={loading || !isEmailSelected}
-                title={
-                  !isEmailSelected ? "Please select an email first" : "Send"
-                }
+                title={!isEmailSelected ? "Please select a name first" : "Send"}
               >
                 ➤
               </button>
@@ -381,6 +386,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "center",
     height: "36px",
     width: "36px",
+    transition: "all 0.2s ease",
   },
   loader: {
     width: "18px",

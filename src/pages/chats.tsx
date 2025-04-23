@@ -61,8 +61,8 @@ export default function ChatInterface() {
     if (isLoading) return;
     if (!isEmailSelected) {
       toast({
-        title: "Email Required",
-        description: "Please select an email before submitting",
+        title: "Name Required",
+        description: "Please select a name before submitting",
         variant: "destructive",
       });
       return;
@@ -271,16 +271,49 @@ export default function ChatInterface() {
                   </Button>
                   <button
                     type="submit"
-                    className="absolute right-6 top-1/2 -translate-y-1/2"
+                    className={`absolute right-6 top-1/2 -translate-y-1/2 transition-all duration-200 ${
+                      typeof watch("query") === "undefined" ||
+                      watch("query") === "" ||
+                      isLoading ||
+                      !isEmailSelected
+                        ? "opacity-60"
+                        : ""
+                    }`}
                     disabled={
                       typeof watch("query") === "undefined" ||
                       watch("query") === "" ||
                       isLoading ||
                       !isEmailSelected
                     }
+                    onClick={(e) => {
+                      if (!isEmailSelected) {
+                        e.preventDefault();
+                        toast({
+                          title: "Name Required",
+                          description: "Please select a name before submitting",
+                          variant: "destructive",
+                        });
+                      }
+                    }}
                     title={
-                      !isEmailSelected ? "Please select an email first" : "Send"
+                      !isEmailSelected ? "Please select a name first" : "Send"
                     }
+                    style={{
+                      cursor:
+                        typeof watch("query") === "undefined" ||
+                        watch("query") === "" ||
+                        isLoading ||
+                        !isEmailSelected
+                          ? "not-allowed"
+                          : "pointer",
+                      filter:
+                        typeof watch("query") === "undefined" ||
+                        watch("query") === "" ||
+                        isLoading ||
+                        !isEmailSelected
+                          ? "grayscale(80%)"
+                          : "none",
+                    }}
                   >
                     <img src={sendButtonIcon} width={30} alt="Send" />
                   </button>
