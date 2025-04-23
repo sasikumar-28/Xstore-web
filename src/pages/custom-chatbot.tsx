@@ -95,8 +95,10 @@ export default function Customchatbot() {
           body: JSON.stringify({
             flowId,
             flowAliasId,
-            input: input.trim(),
-            storeCode,
+            input: {
+              input: input.trim(),
+              storeCode: storeCode,
+            },
             customerId: selectedEmail,
           }),
         }
