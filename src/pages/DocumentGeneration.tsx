@@ -94,8 +94,8 @@ export default function DocumentGeneration() {
     if (isLoading) return;
     if (!isEmailSelected) {
       toast({
-        title: "Email Required",
-        description: "Please select an email before submitting",
+        title: "Name Required",
+        description: "Please select a name before submitting",
         variant: "destructive",
       });
       return;
@@ -309,16 +309,49 @@ export default function DocumentGeneration() {
                   </Button>
                   <button
                     type="submit"
-                    className="absolute right-6 top-1/2 -translate-y-1/2"
+                    className={`absolute right-6 top-1/2 -translate-y-1/2 transition-all duration-200 ${
+                      !selectedFile ||
+                      typeof watch("query") === "undefined" ||
+                      isLoading ||
+                      !isEmailSelected
+                        ? "opacity-60"
+                        : ""
+                    }`}
                     disabled={
                       !selectedFile ||
                       typeof watch("query") === "undefined" ||
                       isLoading ||
                       !isEmailSelected
                     }
+                    onClick={(e) => {
+                      if (!isEmailSelected) {
+                        e.preventDefault();
+                        toast({
+                          title: "Name Required",
+                          description: "Please select a name before submitting",
+                          variant: "destructive",
+                        });
+                      }
+                    }}
                     title={
-                      !isEmailSelected ? "Please select an email first" : "Send"
+                      !isEmailSelected ? "Please select a name first" : "Send"
                     }
+                    style={{
+                      cursor:
+                        !selectedFile ||
+                        typeof watch("query") === "undefined" ||
+                        isLoading ||
+                        !isEmailSelected
+                          ? "not-allowed"
+                          : "pointer",
+                      filter:
+                        !selectedFile ||
+                        typeof watch("query") === "undefined" ||
+                        isLoading ||
+                        !isEmailSelected
+                          ? "grayscale(80%)"
+                          : "none",
+                    }}
                   >
                     <img src={sendButtonIcon} width={30} alt="Send" />
                   </button>

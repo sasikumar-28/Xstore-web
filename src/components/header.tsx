@@ -16,15 +16,14 @@ const Header = () => {
   ];
 
   const emailOptions = [
-    { value: "", label: "Select Email" },
-    { value: "shailja.pathak@aspiresys.com", label: "Shailja Pathak" },
+    { value: "chaitanya.rebbana@aspiresys.com", label: "Chaitanya Rebbana" },
     { value: "iliyas.ahmed@aspiresys.com", label: "Iliyas Ahmed" },
+    { value: "mohan.lingaiah@aspiresys.com", label: "Mohan Lingaiah" },
+    { value: "shailja.pathak@aspiresys.com", label: "Shailja Pathak" },
     {
       value: "srinivas.kavampalli@aspiresys.com",
       label: "Srinivas Kavampalli",
     },
-    { value: "chaitanya.rebbana@aspiresys.com", label: "Chaitanya Rebbana" },
-    { value: "mohan.lingaiah@aspiresys.com", label: "Mohan Lingaiah" },
   ];
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -33,8 +32,10 @@ const Header = () => {
 
     if (email) {
       toast({
-        title: "Email Selected",
-        description: `You've selected ${email}`,
+        title: "Name Selected",
+        description: `You've selected ${
+          emailOptions.find((option) => option.value === email)?.label
+        }`,
       });
     }
   };
@@ -48,7 +49,7 @@ const Header = () => {
           value={selectedEmail}
           onChange={handleEmailChange}
           className="w-64 text-white bg-[#804C9E] border-white focus:border-white focus:ring-white focus:ring-offset-[#804C9E] rounded-md"
-          placeholder="Select Email"
+          placeholder="Select Your Name"
         />
         <div className="flex items-center gap-4">
           <div className="text-sm flex items-center gap-2">
