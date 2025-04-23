@@ -2,6 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { getAccessToken } from "@/utils/getAccessToken";
 import { Icon } from "@iconify/react";
 import { useSearchParams } from "react-router";
+import { useAppSelector } from "@/redux/hooks";
+import {
+  selectCustomerId,
+  selectIsCustomerIdSelected,
+} from "@/redux/slices/userSlice";
+import { useToast } from "@/hooks/use-toast";
 
 const formatStringToHtml = (str: string) => {
   return str.split("\\n").map((line, index) => {
@@ -34,6 +40,10 @@ export default function Customchatbot() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const param = searchParams.get("param");
+  const storeCode = searchParams.get("storeCode") || "aspiresys-ai-xstore";
+  const selectedEmail = useAppSelector(selectCustomerId);
+  const isEmailSelected = useAppSelector(selectIsCustomerIdSelected);
+  const { toast } = useToast();
 
   const fetchWithToken = async (url: string, options = {}) => {
     const token = await getAccessToken();
@@ -59,10 +69,18 @@ export default function Customchatbot() {
     setInput("");
     setJobId(null);
     setLoading(false);
-  }, [param]);
+  }, [param, storeCode]);
 
   const getChatData = async () => {
     if (!input.trim()) return;
+    if (!isEmailSelected) {
+      toast({
+        title: "Email Required",
+        description: "Please select an email before submitting",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setLoading(true);
     try {
@@ -78,6 +96,8 @@ export default function Customchatbot() {
             flowId,
             flowAliasId,
             input: input.trim(),
+            storeCode,
+            customerId: selectedEmail,
           }),
         }
       );
@@ -92,6 +112,11 @@ export default function Customchatbot() {
     } catch (error) {
       console.error("Error sending message to chatbot:", error);
       setLoading(false);
+      toast({
+        title: "Error",
+        description: "An error occurred. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -286,7 +311,10 @@ export default function Customchatbot() {
               <button
                 onClick={getChatData}
                 style={styles.submitButton}
-                disabled={loading}
+                disabled={loading || !isEmailSelected}
+                title={
+                  !isEmailSelected ? "Please select an email first" : "Send"
+                }
               >
                 ➤
               </button>

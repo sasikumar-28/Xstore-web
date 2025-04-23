@@ -10,6 +10,13 @@ import axios from "axios";
 import { Paperclip } from "lucide-react";
 import { getDocumentGenerationBedRock } from "@/server/gen-ai";
 import { getAccessToken } from "@/utils/getAccessToken";
+import { useSearchParams } from "react-router";
+import { useAppSelector } from "@/redux/hooks";
+import {
+  selectCustomerId,
+  selectIsCustomerIdSelected,
+} from "@/redux/slices/userSlice";
+import { useToast } from "@/hooks/use-toast";
 
 const formatStringToHtml = (str: string) => {
   return str
@@ -63,7 +70,11 @@ export default function DocumentGeneration() {
   const [response, setResponse] = useState<string>(``);
   const [key, setKey] = useState(0);
   const [jobId, setJobId] = useState<string | null>(null);
-  // const { toast } = useToast()
+  const [searchParams] = useSearchParams();
+  const storeCode = searchParams.get("storeCode") || "aspiresys-ai-xstore";
+  const selectedEmail = useAppSelector(selectCustomerId);
+  const isEmailSelected = useAppSelector(selectIsCustomerIdSelected);
+  const { toast } = useToast();
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log(event, "file");
@@ -81,16 +92,37 @@ export default function DocumentGeneration() {
   const onSubmit = async (data: FormValues) => {
     if (!selectedFile || !data.query) return;
     if (isLoading) return;
+    if (!isEmailSelected) {
+      toast({
+        title: "Email Required",
+        description: "Please select an email before submitting",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsLoading(true);
     // setError(null);
     setResponse("");
 
     try {
-      const res = await getDocumentGenerationBedRock(selectedFile, data.query);
+      const res = await getDocumentGenerationBedRock(
+        selectedFile,
+        data.query,
+        storeCode,
+        selectedEmail
+      );
       console.log(res);
-      const jobId = res.jobId;
-      setJobId(jobId);
+      if (res && res.jobId) {
+        setJobId(res.jobId);
+      } else {
+        setIsLoading(false);
+        toast({
+          title: "Error",
+          description: "Failed to process request. Please try again.",
+          variant: "destructive",
+        });
+      }
       return;
     } catch (error) {
       let errorMessage = "An unexpected error occurred";
@@ -100,7 +132,12 @@ export default function DocumentGeneration() {
         errorMessage = error.message;
       }
       console.log("Error:", errorMessage);
-      // setError(errorMessage);
+      setIsLoading(false);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     }
   };
 
@@ -223,7 +260,7 @@ export default function DocumentGeneration() {
                 {selectedFile && (
                   <div className="flex flex-wrap gap-2 mb-1 items-center px-7 py-1 w-10/12 rounded-full drop-shadow-lg">
                     <div className="flex flex-col">
-                      <span className="text-sm text-ellipsis truncate max-w-[200px] truncate">
+                      <span className="text-sm text-ellipsis max-w-[200px] truncate">
                         {selectedFile.name}
                       </span>
                       <span className="text-xs ">
@@ -276,7 +313,11 @@ export default function DocumentGeneration() {
                     disabled={
                       !selectedFile ||
                       typeof watch("query") === "undefined" ||
-                      isLoading
+                      isLoading ||
+                      !isEmailSelected
+                    }
+                    title={
+                      !isEmailSelected ? "Please select an email first" : "Send"
                     }
                   >
                     <img src={sendButtonIcon} width={30} alt="Send" />
