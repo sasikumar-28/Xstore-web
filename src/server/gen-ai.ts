@@ -2,7 +2,11 @@
 import axios from "axios";
 import { getAccessToken } from "../utils/getAccessToken";
 
-export const getRequirementCapture = async (data: any) => {
+export const getRequirementCapture = async (
+  data: any,
+  storeCode: string,
+  customerId: string
+) => {
   try {
     const token = await getAccessToken();
     if (!token) {
@@ -13,7 +17,7 @@ export const getRequirementCapture = async (data: any) => {
     const formData = new FormData();
     formData.append("file", data);
     const response = await axios.post(
-      `${URL}/api/web-bff/requirement-capture`,
+      `${URL}/api/web-bff/requirement-capture?storeCode=${storeCode}&customerId=${customerId}`,
       formData,
       {
         headers: {
@@ -35,7 +39,9 @@ export const getRequirementCapture = async (data: any) => {
 
 export const getDocumentGenerationBedRock = async (
   data: any,
-  message: string
+  message: string,
+  storeCode: string,
+  customerId: string
 ) => {
   try {
     const token = await getAccessToken();
@@ -47,7 +53,7 @@ export const getDocumentGenerationBedRock = async (
     const formData = new FormData();
     formData.append("file", data);
     const response = await axios.post(
-      `${URL}/api/web-bff/document-generation-bedrock?message=${message}`,
+      `${URL}/api/web-bff/document-generation-bedrock?message=${message}&storeCode=${storeCode}&customerId=${customerId}`,
       formData,
       {
         headers: {

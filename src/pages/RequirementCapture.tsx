@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getRequirementCapture } from "@/server/gen-ai";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useSearchParams } from "react-router";
+import { useAppSelector } from "@/redux/hooks";
+import {
+  selectCustomerId,
+  selectIsCustomerIdSelected,
+} from "@/redux/slices/userSlice";
+import { useToast } from "@/hooks/use-toast";
 
 export const formatStringToHtml = (str: string) => {
   return str
@@ -29,6 +36,11 @@ export default function RequirementCapture() {
   const [loading, setLoading] = useState<boolean>(false);
   const [jobId, setJobId] = useState<string | null>(null);
   const [key, setKey] = useState(0);
+  const selectedEmail = useAppSelector(selectCustomerId);
+  const isEmailSelected = useAppSelector(selectIsCustomerIdSelected);
+  const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const storeCode = searchParams.get("storeCode") || "aspiresys-ai-xstore";
 
   const fetchWithToken = async (url: string, options = {}) => {
     const token = await getAccessToken();
@@ -104,17 +116,40 @@ export default function RequirementCapture() {
 
   const handleFileUpload = () => {
     if (!input) return;
+    if (!isEmailSelected) {
+      toast({
+        title: "Email Required",
+        description: "Please select an email before submitting",
+        variant: "destructive",
+      });
+      return;
+    }
     setLoading(true);
-    getRequirementCapture(input)
+    getRequirementCapture(input, storeCode, selectedEmail)
       .then((res) => {
-        setJobId(res.jobId);
-        setChatHistory((prev) => [
-          ...prev,
-          { query: input.name, response: "" },
-        ]);
+        if (res && res.jobId) {
+          setJobId(res.jobId);
+          setChatHistory((prev) => [
+            ...prev,
+            { query: input.name, response: "" },
+          ]);
+        } else {
+          setLoading(false);
+          toast({
+            title: "Error",
+            description: "Failed to process request. Please try again.",
+            variant: "destructive",
+          });
+        }
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
+        toast({
+          title: "Error",
+          description: "An error occurred. Please try again.",
+          variant: "destructive",
+        });
       });
   };
 
@@ -229,7 +264,7 @@ export default function RequirementCapture() {
                   type="file"
                   onChange={(e) => handleFileChange(e)}
                   placeholder="Ask me anything"
-                  className="pr-10  focus:border-purple-500 h-12 rounded-lg w-full rounded-full"
+                  className="pr-10 focus:border-purple-500 h-12 w-full rounded-full"
                   style={{ border: "1px dashed gray" }}
                   accept=".txt, .csv"
                   id="fileInput"
@@ -253,8 +288,11 @@ export default function RequirementCapture() {
               ) : (
                 <Button
                   onClick={() => handleFileUpload()}
-                  disabled={loading}
-                  className="bg-purple-600 hover:bg-purple-700 text-white h-12 w-12 rounded-lg flex items-center justify-center rounded-full"
+                  disabled={loading || !isEmailSelected}
+                  className="bg-purple-600 hover:bg-purple-700 text-white h-12 w-12 rounded-full flex items-center justify-center"
+                  title={
+                    !isEmailSelected ? "Please select an email first" : "Submit"
+                  }
                 >
                   ➤
                 </Button>

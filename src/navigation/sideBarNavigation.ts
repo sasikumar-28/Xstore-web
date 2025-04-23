@@ -11,16 +11,16 @@ export const getRoute = (role = "admin") => {
           children: [
             {
               name: "Requirement Capture",
-              link: "/RequirementCapture",
+              link: "/RequirementCapture?storeCode=aspiresys-ai-xstore",
             },
             {
               name: "Document Generation (Bedrock)",
-              link: "/DocumentGeneration",
+              link: "/DocumentGeneration?storeCode=aspiresys-ai-xstore",
             },
-            // {
-            //   name: "Document Generation",
-            //   link: "/chats",
-            // },
+            {
+              name: "Document Generation",
+              link: "/chats?storeCode=aspiresys-ai-xstore",
+            },
           ],
         },
       ],
@@ -35,7 +35,7 @@ export const getRoute = (role = "admin") => {
           children: [
             {
               name: "Functional Assistant",
-              link: "/Customchatbot?param=composable-commerce",
+              link: "/Customchatbot?param=composable-commerce&storeCode=aspiresys-ai-ecommerce",
             },
           ],
         },

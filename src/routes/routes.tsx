@@ -4,7 +4,7 @@ import AppLayout from "@/layout/app-layout";
 import NotFound from "@/components/not-found";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
-// import Chats from "@/pages/chats";
+import Chats from "@/pages/chats";
 import Home from "@/pages/home";
 import Customchatbot from "@/pages/custom-chatbot";
 import RequirementCapture from "@/pages/RequirementCapture";
@@ -20,10 +20,10 @@ const routes = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
-      // {
-      //   path: "chats",
-      //   element: <Chats />,
-      // },
+      {
+        path: "chats",
+        element: <Chats />,
+      },
       {
         path: "Customchatbot",
         element: <Customchatbot />,
