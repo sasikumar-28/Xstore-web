@@ -4,7 +4,10 @@ export const getRoute = (role = "admin") => {
     {
       name: "Xstore",
       children: [
-        { name: "Functional Assistant", link: "/Customchatbot" },
+        {
+          name: "Functional Assistant",
+          link: "/Customchatbot?storeCode=aspiresys-ai-xstore",
+        },
         {
           name: "FRD Generation",
           link: "",
