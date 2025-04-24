@@ -5,7 +5,7 @@ import botChatLogo from "@/assets/chat-page-image/bot-chat-logo.png";
 import sendButtonIcon from "@/assets/chat-page-image/send-button-icon.png";
 import chatPageRobot from "@/assets/chat-page-image/bot-chat-logo.png";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { getAccessToken } from "@/utils/getAccessToken";
 import { Paperclip } from "lucide-react";
