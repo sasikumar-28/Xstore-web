@@ -14,11 +14,11 @@ export const getRoute = (role = "admin") => {
           children: [
             {
               name: "Requirement Capture",
-              link: "/RequirementCapture?storeCode=aspiresys-ai-xstore",
+              link: "/RequirementCapture?storeCode=aspiresys-ai-xstore-reqCapture",
             },
             {
               name: "Document Generation (Bedrock)",
-              link: "/DocumentGeneration?storeCode=aspiresys-ai-xstore",
+              link: "/DocumentGeneration?storeCode=aspiresys-ai-xstore-docGen",
             },
             {
               name: "Document Generation",
