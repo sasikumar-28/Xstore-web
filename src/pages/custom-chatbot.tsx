@@ -103,7 +103,6 @@ export default function Customchatbot() {
           }),
         }
       );
-
       if (response.jobId) {
         setJobId(response.jobId);
         setChatHistory((prev) => [...prev, { query: input, response: "" }]);
