@@ -20,10 +20,10 @@ export const getRoute = (role = "admin") => {
               name: "Document Generation (Bedrock)",
               link: "/DocumentGeneration?storeCode=aspiresys-ai-xstore-docGen",
             },
-            {
-              name: "Document Generation",
-              link: "/chats?storeCode=aspiresys-ai-xstore",
-            },
+            // {
+            //   name: "Document Generation",
+            //   link: "/chats?storeCode=aspiresys-ai-xstore",
+            // },
           ],
         },
       ],
