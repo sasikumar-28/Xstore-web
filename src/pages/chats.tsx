@@ -87,18 +87,19 @@ export default function ChatInterface() {
         formData.append("file", selectedFile);
       }
 
+      // Add storeCode to the form data
+      formData.append("storeCode", storeCode);
+
       const URL = import.meta.env.VITE_SERVER_BASE_URL;
       // const URL = "http://localhost:5000";
 
       // Step 1: Submit request and get jobId
       const { data: jobResponse } = await axios.post(
-        `${URL}/api/bff/users/xstore-chatgpt`,
+        `${URL}/api/bff/users/xstore-chatgpt?userId=${selectedEmail}&registered=true`,
         formData,
         {
           params: {
             userQuery: data.query,
-            storeCode: storeCode,
-            customerId: selectedEmail,
           },
           headers: { Authorization: `Bearer ${token}` },
         }

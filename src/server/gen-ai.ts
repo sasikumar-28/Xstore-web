@@ -16,8 +16,10 @@ export const getRequirementCapture = async (
     const URL = import.meta.env.VITE_SERVER_BASE_URL;
     const formData = new FormData();
     formData.append("file", data);
+    // Add storeCode to the form data
+    formData.append("storeCode", storeCode);
     const response = await axios.post(
-      `${URL}/api/web-bff/requirement-capture?storeCode=${storeCode}&customerId=${customerId}`,
+      `${URL}/api/web-bff/requirement-capture?userId=${customerId}&registered=true`,
       formData,
       {
         headers: {
@@ -52,8 +54,11 @@ export const getDocumentGenerationBedRock = async (
     const URL = import.meta.env.VITE_SERVER_BASE_URL;
     const formData = new FormData();
     formData.append("file", data);
+    // Add storeCode and message to the form data
+    formData.append("storeCode", storeCode);
+    formData.append("message", message);
     const response = await axios.post(
-      `${URL}/api/web-bff/document-generation-bedrock?message=${message}&storeCode=${storeCode}&customerId=${customerId}`,
+      `${URL}/api/web-bff/document-generation-bedrock?userId=${customerId}&registered=true`,
       formData,
       {
         headers: {
