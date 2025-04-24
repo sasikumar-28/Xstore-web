@@ -87,7 +87,7 @@ export default function Customchatbot() {
       const flowId =
         param === "composable-commerce" ? "IS00QDXMCO" : "3VUX9NHM6Z";
       const flowAliasId =
-        param === "composable-commerce" ? "A9BPVK1C3R" : "2PGRJZR3RB";
+        param === "composable-commerce" ? "A9BPVK1C3R" : "6L7YPCACLX";
       const response = await fetchWithToken(
         `${import.meta.env.VITE_SERVER_BASE_URL}/api/web-bff/chatStream`,
         {
