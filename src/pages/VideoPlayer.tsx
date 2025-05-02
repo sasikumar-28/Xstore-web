@@ -26,8 +26,12 @@ const VideoPlayer = () => {
 
   useEffect(() => {
     if (videoUrl) {
-      const embed = getEmbedUrl(videoUrl);
-      setEmbedUrl(embed);
+      if (videoUrl.includes("mp4")) {
+        setEmbedUrl(videoUrl);
+      } else {
+        const embed = getEmbedUrl(videoUrl);
+        setEmbedUrl(embed);
+      }
     }
   }, [videoUrl]);
 

@@ -56,6 +56,14 @@ export const getRoute = (role = "admin") => {
           name: "API Test Script Generation - Design Studio",
           link: "/VideoPlayer?url=https://www.youtube.com/watch?v=TnqWOYTYR8E&ab_channel=Codespell.ai",
         },
+        {
+          name: "Coding Assistant Demo",
+          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=Tn1WoGIxF8U&ab_channel=Codespell.ai",
+        },
+        {
+          name: "Figma Plugin",
+          link: "/VideoPlayer?url=./Figma Plugin V3.mp4",
+        },
       ],
     },
     {
