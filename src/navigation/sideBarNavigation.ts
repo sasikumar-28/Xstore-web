@@ -44,5 +44,23 @@ export const getRoute = (role = "admin") => {
         },
       ],
     },
+    {
+      name: "Codespell",
+      link: "",
+      children: [
+        {
+          name: "API Generation - Design Studio",
+          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=7Hfrwib4QPU&ab_channel=Codespell.ai",
+        },
+        {
+          name: "API Test Script Generation - Design Studio",
+          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=TnqWOYTYR8E&ab_channel=Codespell.ai",
+        },
+      ],
+    },
+    {
+      name: "TANYA",
+      link: "https://test-auras-react.vercel.app/?storeCode=footlocker",
+    },
   ];
 };
