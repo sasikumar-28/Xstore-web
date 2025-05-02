@@ -49,22 +49,18 @@ export const getRoute = (role = "admin") => {
       link: "",
       children: [
         {
-          name: "Codespell Guide",
-          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=89CnAAg6LvY&list=PLWEj1vqQ3W4M7pIstI3t0WRZz5GBJruO0",
+          name: "API Generation - Design Studio",
+          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=7Hfrwib4QPU&ab_channel=Codespell.ai",
         },
         {
-          name: "AI Code Assistant",
-          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=bp_IXRBBTf8&list=PLWEj1vqQ3W4PW-jjcG8-NndYFsuABRHHq",
-        },
-        {
-          name: "Design Studio",
-          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=7Hfrwib4QPU&list=PLWEj1vqQ3W4PkkVzaSt5mRhBmx_u5pqUo",
+          name: "API Test Script Generation - Design Studio",
+          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=TnqWOYTYR8E&ab_channel=Codespell.ai",
         },
       ],
     },
     {
       name: "TANYA",
-      link: "https://auras-react.vercel.app/?storeCode=foot",
+      link: "https://test-auras-react.vercel.app/?storeCode=footlocker",
     },
   ];
 };

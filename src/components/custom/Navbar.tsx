@@ -47,7 +47,7 @@ const Navbar = () => {
                   <AccordionItem
                     key={index}
                     value={`item-${index}`}
-                    className="border-none mb-8"
+                    className="border-none"
                   >
                     <AccordionTrigger className="text-lg font-medium text-primary flex justify-between focus:outline-none -mt-3 pb-0">
                       {item?.link ? (
@@ -164,7 +164,11 @@ const Navbar = () => {
                 ) : (
                   <div
                     key={index}
-                    className="cursor-pointer p-2"
+                    style={{
+                      fontWeight: 600,
+                      marginTop: "8px",
+                    }}
+                    className="cursor-pointer"
                     onClick={() =>
                       item.link?.includes("http")
                         ? window.open(String(item?.link), "_blank")

@@ -35,8 +35,8 @@ const VideoPlayer = () => {
     <div style={{ padding: 20 }}>
       {embedUrl ? (
         <iframe
-          width="100%"
-          height="500"
+          width="300%"
+          height="90%"
           src={embedUrl}
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
