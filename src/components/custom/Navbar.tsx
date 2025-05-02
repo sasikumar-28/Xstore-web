@@ -165,7 +165,11 @@ const Navbar = () => {
                   <div
                     key={index}
                     className="cursor-pointer p-2"
-                    onClick={() => navigate(String(item?.link))}
+                    onClick={() =>
+                      item.link?.includes("http")
+                        ? window.open(String(item?.link), "_blank")
+                        : navigate(String(item?.link))
+                    }
                   >
                     {item.name}
                   </div>

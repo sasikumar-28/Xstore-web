@@ -44,5 +44,27 @@ export const getRoute = (role = "admin") => {
         },
       ],
     },
+    {
+      name: "Codespell",
+      link: "",
+      children: [
+        {
+          name: "Codespell Guide",
+          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=89CnAAg6LvY&list=PLWEj1vqQ3W4M7pIstI3t0WRZz5GBJruO0",
+        },
+        {
+          name: "AI Code Assistant",
+          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=bp_IXRBBTf8&list=PLWEj1vqQ3W4PW-jjcG8-NndYFsuABRHHq",
+        },
+        {
+          name: "Design Studio",
+          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=7Hfrwib4QPU&list=PLWEj1vqQ3W4PkkVzaSt5mRhBmx_u5pqUo",
+        },
+      ],
+    },
+    {
+      name: "TANYA",
+      link: "https://auras-react.vercel.app/?storeCode=foot",
+    },
   ];
 };

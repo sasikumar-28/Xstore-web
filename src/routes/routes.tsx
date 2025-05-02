@@ -9,6 +9,7 @@ import Home from "@/pages/home";
 import Customchatbot from "@/pages/custom-chatbot";
 import RequirementCapture from "@/pages/RequirementCapture";
 import DocumentGeneration from "@/pages/DocumentGeneration";
+import VideoPlayer from "@/pages/VideoPlayer";
 
 const routes = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const routes = createBrowserRouter([
       {
         path: "DocumentGeneration",
         element: <DocumentGeneration />,
+      },
+      {
+        path: "VideoPlayer",
+        element: <VideoPlayer />,
       },
     ],
   },
