@@ -58,7 +58,7 @@ export const getRoute = (role = "admin") => {
         },
         {
           name: "Coding Assistant Demo",
-          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=Tn1WoGIxF8U&ab_channel=Codespell.ai",
+          link: "/VideoPlayer?url=https://www.youtube.com/watch?v=466Ztup066M&ab_channel=Codespell.ai",
         },
         {
           name: "Figma Plugin",
