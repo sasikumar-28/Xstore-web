@@ -70,5 +70,31 @@ export const getRoute = (role = "admin") => {
       name: "TANYA",
       link: "https://test-auras-react.vercel.app/?storeCode=footlocker",
     },
+    {
+      name: "QA Automation",
+      link: "",
+      children: [
+        {
+          name: "Xstore UARM Demo Video",
+          link: "/VideoPlayer?url=./UArm-Demo-Tap-Insert-Swipe-Actions_With Reports.mp4",
+        },
+        {
+          name: "MFCS Item Order creation",
+          link: "/VideoPlayer?url=./MFCS_Item_Order_Creation.mp4",
+        },
+        {
+          name: "Order Creation Fulfillment",
+          link: "/VideoPlayer?url=./eCom_Order_Creation_MAO_Order_Fulfillment.mp4",
+        },
+        {
+          name: "Order Creation MAO Cancellation",
+          link: "/VideoPlayer?url=./eCom_Order Creation_MAO_Order_Cancellation.mp4",
+        },
+        {
+          name: "POS Lab Offshore",
+          link: "/VideoPlayer?url=./POS LAB OFFSHORE.jpg",
+        },
+      ],
+    },
   ];
 };
