@@ -70,5 +70,9 @@ export const getRoute = (role = "admin") => {
       name: "TANYA",
       link: "https://test-auras-react.vercel.app/?storeCode=footlocker",
     },
+    {
+      name: "QA Automation",
+      link: "/VideoPlayer?url=./UArm-Demo-Tap-Insert-Swipe-Actions_With Reports.mp4",
+    },
   ];
 };
