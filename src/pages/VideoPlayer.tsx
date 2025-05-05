@@ -23,21 +23,28 @@ const VideoPlayer = () => {
   const [searchParams] = useSearchParams();
   const videoUrl = searchParams.get("url");
   const [embedUrl, setEmbedUrl] = useState<string | null>(null);
-
+  const [isImage, setIsImage] = useState(false);
   useEffect(() => {
     if (videoUrl) {
-      if (videoUrl.includes("mp4")) {
-        setEmbedUrl(videoUrl);
+      if (videoUrl.includes("jpg") || videoUrl.includes("png")) {
+        setIsImage(true);
       } else {
-        const embed = getEmbedUrl(videoUrl);
-        setEmbedUrl(embed);
+        setIsImage(false);
+        if (videoUrl.includes("mp4")) {
+          setEmbedUrl(videoUrl);
+        } else {
+          const embed = getEmbedUrl(videoUrl);
+          setEmbedUrl(embed);
+        }
       }
     }
   }, [videoUrl]);
 
   return (
     <div style={{ padding: 20 }}>
-      {embedUrl ? (
+      {isImage ? (
+        <img src={videoUrl as string} alt="Video" />
+      ) : embedUrl ? (
         <iframe
           width="300%"
           height="90%"
