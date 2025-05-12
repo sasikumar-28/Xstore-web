@@ -6,7 +6,7 @@ export const getRoute = (role = "admin") => {
       children: [
         {
           name: "Functional Assistant",
-          link: "/Customchatbot?storeCode=aspiresys-ai-xstore",
+          link: "/Customchatbot?storeCode=aspiresys-ai-sales",
         },
         {
           name: "FRD Generation",
@@ -14,15 +14,15 @@ export const getRoute = (role = "admin") => {
           children: [
             {
               name: "Requirement Capture",
-              link: "/RequirementCapture?storeCode=aspiresys-ai-xstore-reqCapture",
+              link: "/RequirementCapture?storeCode=aspiresys-ai-sales-reqCapture",
             },
             {
               name: "Document Generation (Bedrock)",
-              link: "/DocumentGeneration?storeCode=aspiresys-ai-xstore-docGen",
+              link: "/DocumentGeneration?storeCode=aspiresys-ai-sales-docGen",
             },
             // {
             //   name: "Document Generation",
-            //   link: "/chats?storeCode=aspiresys-ai-xstore",
+            //   link: "/chats?storeCode=aspiresys-ai-sales",
             // },
           ],
         },

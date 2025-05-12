@@ -40,7 +40,7 @@ export default function RequirementCapture() {
   const isEmailSelected = useAppSelector(selectIsCustomerIdSelected);
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
-  const storeCode = searchParams.get("storeCode") || "aspiresys-ai-xstore";
+  const storeCode = searchParams.get("storeCode") || "aspiresys-ai-sales";
 
   const fetchWithToken = async (url: string, options = {}) => {
     const token = await getAccessToken();

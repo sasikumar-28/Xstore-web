@@ -36,7 +36,7 @@ export default function ChatInterface() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [response, setResponse] = useState<string>("");
   const [searchParams] = useSearchParams();
-  const storeCode = searchParams.get("storeCode") || "aspiresys-ai-xstore";
+  const storeCode = searchParams.get("storeCode") || "aspiresys-ai-sales";
   const selectedEmail = useAppSelector(selectCustomerId);
   const isEmailSelected = useAppSelector(selectIsCustomerIdSelected);
   const { toast } = useToast();
@@ -160,7 +160,7 @@ export default function ChatInterface() {
   };
 
   useEffect(() => {
-    navigate("/DocumentGeneration?storeCode=aspiresys-ai-xstore-docGen");
+    navigate("/DocumentGeneration?storeCode=aspiresys-ai-sales-docGen");
   }, [response]);
 
   return (

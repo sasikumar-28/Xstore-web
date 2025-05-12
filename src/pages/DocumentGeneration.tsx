@@ -71,7 +71,7 @@ export default function DocumentGeneration() {
   const [key, setKey] = useState(0);
   const [jobId, setJobId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
-  const storeCode = searchParams.get("storeCode") || "aspiresys-ai-xstore";
+  const storeCode = searchParams.get("storeCode") || "aspiresys-ai-sales";
   const selectedEmail = useAppSelector(selectCustomerId);
   const isEmailSelected = useAppSelector(selectIsCustomerIdSelected);
   const { toast } = useToast();
