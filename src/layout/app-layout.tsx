@@ -7,7 +7,6 @@ const AppLayout = () => {
     <>
       <Header />
       <main className="bg-[#FAFAFA] h-full flex">
-        <Navbar />
         <Outlet />
       </main>
       {/* <Footer /> */}
