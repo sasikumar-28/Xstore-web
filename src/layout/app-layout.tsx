@@ -1,4 +1,3 @@
-import Navbar from "@/components/custom/Navbar";
 import Header from "@/components/header";
 import { Outlet } from "react-router";
 
