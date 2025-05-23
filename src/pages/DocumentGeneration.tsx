@@ -10,12 +10,7 @@ import axios from "axios";
 import { Paperclip } from "lucide-react";
 import { getDocumentGenerationBedRock } from "@/server/gen-ai";
 import { getAccessToken } from "@/utils/getAccessToken";
-import { useSearchParams } from "react-router";
-import { useAppSelector } from "@/redux/hooks";
-import {
-  selectCustomerId,
-  selectIsCustomerIdSelected,
-} from "@/redux/slices/userSlice";
+import { useSearchParams, useNavigate } from "react-router";
 import { useToast } from "@/hooks/use-toast";
 
 const formatStringToHtml = (str: string) => {
@@ -65,6 +60,7 @@ export default function DocumentGeneration() {
     reset,
     formState: { errors },
   } = useForm<FormValues>();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [response, setResponse] = useState<string>(``);
@@ -72,8 +68,14 @@ export default function DocumentGeneration() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const storeCode = searchParams.get("storeCode") || "aspiresys-ai-sales";
-  const selectedEmail = useAppSelector(selectCustomerId);
-  const isEmailSelected = useAppSelector(selectIsCustomerIdSelected);
+
+  useEffect(() => {
+    const customerId = localStorage.getItem("customerId");
+    if (!customerId) {
+      navigate("/login");
+    }
+  }, []);
+
   const { toast } = useToast();
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,14 +94,6 @@ export default function DocumentGeneration() {
   const onSubmit = async (data: FormValues) => {
     if (!selectedFile || !data.query) return;
     if (isLoading) return;
-    if (!isEmailSelected) {
-      toast({
-        title: "Name Required",
-        description: "Please select a name before submitting",
-        variant: "destructive",
-      });
-      return;
-    }
 
     setIsLoading(true);
     // setError(null);
@@ -110,7 +104,7 @@ export default function DocumentGeneration() {
         selectedFile,
         data.query,
         storeCode,
-        selectedEmail
+        localStorage.getItem("customerId") || ""
       );
       console.log(res);
       if (res && res.jobId) {
@@ -312,43 +306,30 @@ export default function DocumentGeneration() {
                     className={`absolute right-6 top-1/2 -translate-y-1/2 transition-all duration-200 ${
                       !selectedFile ||
                       typeof watch("query") === "undefined" ||
-                      isLoading ||
-                      !isEmailSelected
+                      isLoading
                         ? "opacity-60"
                         : ""
                     }`}
                     disabled={
                       !selectedFile ||
                       typeof watch("query") === "undefined" ||
-                      isLoading ||
-                      !isEmailSelected
+                      isLoading
                     }
                     onClick={(e) => {
-                      if (!isEmailSelected) {
-                        e.preventDefault();
-                        toast({
-                          title: "Name Required",
-                          description: "Please select a name before submitting",
-                          variant: "destructive",
-                        });
-                      }
+                      e.preventDefault();
+                      handleSubmit(onSubmit)();
                     }}
-                    title={
-                      !isEmailSelected ? "Please select a name first" : "Send"
-                    }
                     style={{
                       cursor:
                         !selectedFile ||
                         typeof watch("query") === "undefined" ||
-                        isLoading ||
-                        !isEmailSelected
+                        isLoading
                           ? "not-allowed"
                           : "pointer",
                       filter:
                         !selectedFile ||
                         typeof watch("query") === "undefined" ||
-                        isLoading ||
-                        !isEmailSelected
+                        isLoading
                           ? "grayscale(80%)"
                           : "none",
                     }}
