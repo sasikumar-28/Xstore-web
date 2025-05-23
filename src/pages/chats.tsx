@@ -160,7 +160,7 @@ export default function ChatInterface() {
   };
 
   useEffect(() => {
-    navigate("/DocumentGeneration?storeCode=aspiresys-ai-sales-docGen");
+    navigate("/Customchatbot?storeCode=aspiresys-ai-sales");
   }, [response]);
 
   return (

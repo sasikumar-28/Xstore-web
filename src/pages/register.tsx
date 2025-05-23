@@ -175,10 +175,20 @@ export default function Register() {
                 type="button"
                 variant="outline"
                 className="border-[#ff4d6d] text-[#EF4869] hover:bg-[#ff4d6d]/10 rounded-full text-sm px-8 py-2"
-                onClick={() => reset()}
+                onClick={() => {
+                  reset();
+                }}
               >
                 Cancel
               </Button>
+            </div>
+            <div className=" text-sm text-[#000000]">
+              <div
+                className="cursor-pointer"
+                onClick={() => navigate("/login")}
+              >
+                Already have an account? Login
+              </div>
             </div>
           </form>
         </div>

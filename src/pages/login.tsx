@@ -13,6 +13,8 @@ import { getAccessToken } from "@/utils/getAccessToken";
 import Header from "@/components/header";
 import { setCustomerId } from "@/redux/slices/userSlice";
 import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 interface FormValues {
   email: string;
@@ -22,6 +24,7 @@ interface FormValues {
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -41,6 +44,7 @@ export default function Login() {
       password,
     };
 
+    setIsLoading(true);
     try {
       const token = await getAccessToken();
       if (!token) {
@@ -48,7 +52,6 @@ export default function Login() {
         return;
       }
 
-      // const URL = "http://localhost:5000";
       const URL = import.meta.env.VITE_SERVER_BASE_URL;
 
       const response = await axios.post(
@@ -64,7 +67,7 @@ export default function Login() {
 
       if (response.status === 200) {
         dispatch(setCustomerId(email));
-        navigate("/DocumentGeneration?storeCode=aspiresys-ai-sales-docGen");
+        navigate("/Customchatbot?storeCode=aspiresys-ai-sales");
         reset();
       } else {
         console.error("Failed to login user:", response.data);
@@ -78,6 +81,8 @@ export default function Login() {
       } else {
         console.error("Unexpected error:", error);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -172,13 +177,19 @@ export default function Login() {
                 </div>
 
                 <div className="flex flex-col justify-between items-center">
-                  <button className="w-12 h-12">
-                    <img
-                      src={submitButtonIcon}
-                      alt="Aspire AI Illustration"
-                      className="object-cover"
-                    />
-                  </button>
+                  {isLoading ? (
+                    <div className="w-12 h-12">
+                      <Loader2 className="w-12 h-12 animate-spin" />
+                    </div>
+                  ) : (
+                    <button className="w-12 h-12">
+                      <img
+                        src={submitButtonIcon}
+                        alt="Aspire AI Illustration"
+                        className="object-cover"
+                      />
+                    </button>
+                  )}
                   <div className="text-center items-center">
                     <NavLink
                       to="/register"

@@ -4,7 +4,7 @@ import AppLayout from "@/layout/app-layout";
 import NotFound from "@/components/not-found";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
-import DocumentGeneration from "@/pages/DocumentGeneration";
+import Customchatbot from "@/pages/custom-chatbot";
 
 const routes = createBrowserRouter([
   {
@@ -20,18 +20,18 @@ const routes = createBrowserRouter([
       //   path: "chats",
       //   element: <Chats />,
       // },
-      // {
-      //   path: "Customchatbot",
-      //   element: <Customchatbot />,
-      // },
+      {
+        path: "Customchatbot",
+        element: <Customchatbot />,
+      },
       // {
       //   path: "RequirementCapture",
       //   element: <RequirementCapture />,
       // },
-      {
-        path: "DocumentGeneration",
-        element: <DocumentGeneration />,
-      },
+      // {
+      //   path: "DocumentGeneration",
+      //   element: <DocumentGeneration />,
+      // },
       // {
       //   path: "VideoPlayer",
       //   element: <VideoPlayer />,
