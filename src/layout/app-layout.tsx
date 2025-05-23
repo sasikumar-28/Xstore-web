@@ -13,7 +13,7 @@ const AppLayout = () => {
       localStorage.removeItem("customerId");
     }
     if (window.location.pathname === "/") {
-      navigate("/DocumentGeneration?storeCode=aspiresys-ai-sales-docGen");
+      navigate("/Customchatbot?storeCode=aspiresys-ai-sales");
     }
   }, []);
   return (
